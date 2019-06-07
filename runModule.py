@@ -4,12 +4,12 @@ from trainmodel import tangent_cft
 
 def main(argv):
 
-    i = int(argv[1])
-    j = int(argv[2])
+    id_1 = int(argv[1])
+    id_2 = int(argv[2])
 
-    for val in range(i, j+1):
-        model = tangent_cft("/home/bm3302/FastText/config" + str(val) + ".txt")
-        model.run(val, False)
+    for config_id in range(id_1, id_2+1):
+        model = tangent_cft("/config/" + str(config_id) + ".txt")
+        model.run(config_id, False)
 
 
 if __name__ == "__main__":
