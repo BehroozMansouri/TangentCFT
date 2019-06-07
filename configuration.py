@@ -1,9 +1,10 @@
-class config:
+class configuration:
 
     def __init__(self, config_file_path):
         file = open(config_file_path)
-        self.filepath_fasttext = file.readline().rstrip('\n')
-        self.result_file_path = file.readline().rstrip('\n')
+        self.file_path_fasttext = file.readline().rstrip('\n').split(",")[1]
+        self.result_vector_file_path = file.readline().rstrip('\n').split(",")[1]
+        self.result_file_path = file.readline().rstrip('\n').split(",")[1]
         self.vector_size = int(file.readline().rstrip('\n').split(",")[1])
         self.context_window_size = int(file.readline().rstrip('\n').split(",")[1])
         self.skip_gram = int(file.readline().rstrip('\n').split(",")[1])
