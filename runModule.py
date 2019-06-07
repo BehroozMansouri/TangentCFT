@@ -11,6 +11,6 @@ def main(argv):
         model = tangent_cft("/home/bm3302/FastText/config" + str(val) + ".txt")
         model.run()
 
-
+    print("bye bye ")
 if __name__ == "__main__":
     main(argv)
