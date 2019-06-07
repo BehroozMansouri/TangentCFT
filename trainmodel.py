@@ -42,7 +42,7 @@ class tangent_cft:
 
         sum = .0
         counter = 0
-        f = open(self.configuration.result_file_path, 'w')
+        f = open("/Retrieval_Results/"+str(self.configuration.id), 'w')
         for queryId in query_vector_map:
             query_vec = query_vector_map[queryId]
             t1 = datetime.datetime.now()
@@ -87,8 +87,8 @@ class tangent_cft:
                 idx += 1
 
                 if save_vectors:
-                    numpy.savetxt(self.configuration.result_vector_file_path + "/" + str(i) + "/" + filename, formula_vector,
-                                  newline=" ")
+                    numpy.savetxt(self.configuration.result_vector_file_path + "/" + str(i) + "/" + filename,
+                                  formula_vector, newline=" ")
 
         temp = numpy.concatenate(numpy_lst, axis=0)
         tensor_values = Variable(torch.tensor(temp).double()).cuda()
