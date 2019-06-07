@@ -9,8 +9,8 @@ def main(argv):
 
     for val in range(i, j+1):
         model = tangent_cft("/home/bm3302/FastText/config" + str(val) + ".txt")
-        model.run()
+        model.run(val, False)
 
-    print("bye bye ")
+
 if __name__ == "__main__":
     main(argv)
