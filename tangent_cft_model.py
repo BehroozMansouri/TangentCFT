@@ -33,5 +33,5 @@ class tangent_cft_model:
         "return model train time"
         return train_start_time - datetime.datetime.now()
 
-    def get_vector(self, math_tuple):
-        return self.model.wv[math_tuple]
+    def get_vector(self, math_concept):
+        return self.model.wv[math_concept]
