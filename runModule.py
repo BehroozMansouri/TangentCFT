@@ -8,7 +8,7 @@ def main(argv):
     id_2 = int(argv[2])
 
     for config_id in range(id_1, id_2+1):
-        model = tangent_cft("/config/" + str(config_id) + ".txt")
+        model = tangent_cft("/config/config_" + str(config_id) + ".csv")
         model.run(config_id, False)
 
 
