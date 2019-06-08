@@ -1,11 +1,10 @@
 from gensim.models import FastText
-import os
 import datetime
 
 
 class tangent_cft_model:
-    def __init__(self, config):
-        self.FastTextInput = []
+    def __init__(self, config, fast_text_train_data):
+        self.FastTextInput = fast_text_train_data
         self.config = config
         self.model = None
 
@@ -25,22 +24,6 @@ class tangent_cft_model:
         max_n = int(self.config.max)
         word_ngrams = int(self.config.ngram)
 
-        for directory in os.listdir(self.config.filepath_fasttext):
-            "Wikipedia pages in our dataset are in folders 1 to 16, only directory for queries is named Queries"
-            if directory != "Queries":
-                path = self.config.filepath_fasttext + directory
-                for filename in os.listdir(path):
-                    file = open(path + "/" + filename)
-                    line = file.readline()
-                    lst = []
-                    while line:
-                        line = line.rstrip('\n').strip()
-                        if line is not "":
-                            lst.append(line)
-                        line = file.readline()
-                    file.close()
-                    self.FastTextInput.append(lst)
-
         train_start_time = datetime.datetime.now()
 
         self.model = FastText(self.FastTextInput, size=size, window=window, sg=sg, hs=hs,
@@ -49,6 +32,7 @@ class tangent_cft_model:
 
         "return model train time"
         return train_start_time - datetime.datetime.now()
+
 
     def get_vector(self, math_tuple):
         return self.model.wv[math_tuple]
