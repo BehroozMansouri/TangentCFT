@@ -1,5 +1,5 @@
 from sys import argv
-from trainmodel import tangent_cft
+import tangent_cft_module
 
 
 def main(argv):
@@ -8,7 +8,7 @@ def main(argv):
     id_2 = int(argv[2])
 
     for config_id in range(id_1, id_2+1):
-        model = tangent_cft("/config/config_" + str(config_id) + ".csv")
+        model = tangent_cft_module("/config/config_" + str(config_id) + ".csv")
         model.run(config_id, False)
 
 
