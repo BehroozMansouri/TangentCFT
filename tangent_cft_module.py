@@ -12,7 +12,7 @@ use_cuda = torch.cuda.is_available()
 number_of_queries = 20
 
 
-class tangent_cft:
+class tangent_cft_module:
     def __init__(self, config_file_path):
         """
             Take the configuration file path, this file define where the tangent_fasttext formulas are (those
@@ -66,6 +66,23 @@ class tangent_cft:
         f.close()
         print("Average retrieval time:")
         print(sum / counter)
+
+    def read_train_data_file(self):
+        for directory in os.listdir(self.config.filepath_fasttext):
+            "Wikipedia pages in our dataset are in folders 1 to 16, only directory for queries is named Queries"
+            if directory != "Queries":
+                path = self.config.filepath_fasttext + directory
+                for filename in os.listdir(path):
+                    file = open(path + "/" + filename)
+                    line = file.readline()
+                    lst = []
+                    while line:
+                        line = line.rstrip('\n').strip()
+                        if line is not "":
+                            lst.append(line)
+                        line = file.readline()
+                    file.close()
+                    self.FastTextInput.append(lst)
 
     def save_Wikipedia_formulas_vectors(self, save_vectors):
         """
