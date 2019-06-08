@@ -42,7 +42,7 @@ class tangent_cft:
 
         sum = .0
         counter = 0
-        f = open("/Retrieval_Results/"+str(self.configuration.id), 'w')
+        f = open("/Retrieval_Results/res_"+str(self.configuration.id), 'w')
         for queryId in query_vector_map:
             query_vec = query_vector_map[queryId]
             t1 = datetime.datetime.now()
