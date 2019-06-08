@@ -91,10 +91,6 @@ def convert_path_elements(path, edge_char_map, edge_char_id):
 def tangent_to_fasttext(tangent_tuple_filepath, fasttext_tuple_filepath, ignore_frp=True, tokenize_all=False,
                         tokenize_number=False):
     """
-
-
-
-
     How to call:
     tangent_to_fasttext("tangent-source","fasttext-destination",ignore_frp=False, tokenize_all=True, tokenize_number
          = False)
