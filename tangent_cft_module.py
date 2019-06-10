@@ -46,7 +46,7 @@ class tangent_cft_module:
 
         sum = .0
         counter = 0
-        f = open("/Retrieval_Results/res_" + str(self.configuration.id), 'w')
+        f = open("Retrieval_Results/res_" + str(self.configuration.id), 'w')
         for queryId in query_vector_map:
             query_vec = query_vector_map[queryId]
             t1 = datetime.datetime.now()
@@ -82,10 +82,13 @@ class tangent_cft_module:
         numpy_lst = []
         idx = 0
         for formula_id in self.collection_formula_map:
-            formula_vector = self.get_vector_representation(self.collection_formula_map[formula_id])
-            numpy_lst.append(formula_vector)
-            result[idx] = formula_id
-            idx += 1
+            try:
+                formula_vector = self.get_vector_representation(self.collection_formula_map[formula_id])
+                numpy_lst.append(formula_vector)
+                result[idx] = formula_id
+                idx += 1
+            except:
+                pass
 
             if save_vectors:
                 numpy.savetxt(self.configuration.result_vector_file_path + "/" + str(formula_id),
@@ -102,7 +105,7 @@ class tangent_cft_module:
         """
         query_vectors = {}
         for i in range(1, number_of_queries + 1):
-            query_vector = self.get_vector_representation(i)
+            query_vector = self.get_vector_representation(self.query_formula_map[i])
             query_vectors[i] = Variable(torch.tensor(query_vector).double()).cuda()
 
             if save_vectors:
