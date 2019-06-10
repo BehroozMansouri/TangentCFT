@@ -4,7 +4,6 @@ from sys import argv
 import configuration
 
 
-
 def main(argv):
 
     id_1 = int(argv[1])
