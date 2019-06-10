@@ -1,12 +1,12 @@
 import os
-import tangent_cft_module
+from tangent_cft_module import tangent_cft_module
 
 number_of_queries = 20
 
 
 class tangent_cft_module_formula(tangent_cft_module):
     def __init__(self, config_file_path):
-        tangent_cft_module.__init__(config_file_path)
+        tangent_cft_module.__init__(self, config_file_path)
 
     "Each hierarchy that we consider for embedding (formula/tuple) needs it own reading file"
     def read_training_data(self):
@@ -15,7 +15,7 @@ class tangent_cft_module_formula(tangent_cft_module):
         "For the training we have a file called collection, where each formula and its encoded value exists there" \
         "each row is a formula#~#encoded_value"
 
-        file = open(self.configuration.filepath_fasttext + "Collection")
+        file = open(self.configuration.file_path_fasttext + "Collection")
         line = file.readline()
         while line:
             line = line.rstrip('\n').strip()
@@ -55,15 +55,14 @@ class tangent_cft_module_formula(tangent_cft_module):
 
     def read_query_data(self):
         formula_map = {}
-        for filename in os.listdir(self.config.filepath_fasttext + "Queries"):
-            file = open(filename)
+
+        file = open(self.configuration.file_path_fasttext + "Queries")
+        line = file.readline()
+        while line:
+            line = line.rstrip('\n').strip()
+            formula = line.split("#~#")[1]
+            query_id = line.split("#~#")[0]
+            formula_map[query_id] = formula
             line = file.readline()
-            lst = []
-            while line:
-                line = line.rstrip('\n').strip()
-                if line is not "":
-                    lst.append(line)
-                line = file.readline()
-            file.close()
-            formula_map[filename] = lst
+        file.close()
         return formula_map
