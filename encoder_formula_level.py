@@ -47,7 +47,7 @@ def tangent_to_fasttext(tangent_tuple_filepath, result_file_path, ignore_frp=Tru
 
 def main():
     source = '/home/bm3302/FastText/SLTTuples_W1/'
-    destination = '/home/bm3302/FastText/formula/maps/'
+    destination = '/home/bm3302/FastText/'
     tangent_to_fasttext(source, destination, ignore_frp=True)
 
 
