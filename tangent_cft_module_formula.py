@@ -1,9 +1,6 @@
 import os
-import torch
 import tangent_cft_module
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-use_cuda = torch.cuda.is_available()
 number_of_queries = 20
 
 
