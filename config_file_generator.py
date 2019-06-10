@@ -11,6 +11,9 @@ def id_lst(start, count):
 
 
 def main():
+
+    fg = configuration("config/7000")
+
     config_map = {
                     "context_window_size": [5],
                     "file_path_fasttext": ["formula_map_opt1.txt"],
