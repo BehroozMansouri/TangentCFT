@@ -13,8 +13,13 @@ def tangent_to_fasttext(tangent_tuple_filepath, result_file_path, ignore_frp=Tru
     # each slt element is given unique Id so that we can convert them back in embeddings
     slt_ids = 60000
     slt_map = {}
-    destination_file = open(result_file_path, "w+")
+    encoded_file_Collection = open(result_file_path + "Collection", "w+")
+    encoded_file_Queries = open(result_file_path + "Queries", "w+")
     for directory in os.listdir(tangent_tuple_filepath):
+        if directory != "Queries":
+            destination_file = encoded_file_Collection
+        else:
+            destination_file = encoded_file_Queries
         for filename in os.listdir(tangent_tuple_filepath + "/" + directory):
 
             source_file = open(tangent_tuple_filepath + "/" + directory + "/" + filename)
@@ -36,12 +41,13 @@ def tangent_to_fasttext(tangent_tuple_filepath, result_file_path, ignore_frp=Tru
             filename = directory + "\\" + filename
             destination_file.write(filename + "#~#" + formula + "\n")
             source_file.close()
-    destination_file.close()
+    encoded_file_Collection.close()
+    encoded_file_Queries.close()
 
 
 def main():
     source = '/home/bm3302/FastText/SLTTuples_W1/'
-    destination = '/home/bm3302/FastText/formula_map_slt1.txt'
+    destination = '/home/bm3302/FastText/formula/maps/'
     tangent_to_fasttext(source, destination, ignore_frp=True)
 
 
