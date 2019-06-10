@@ -1,17 +1,33 @@
 import os
+from enum import Enum
 
 
-def get_slt_elements(tuple, ignore_frp=True):
+class Node_token(Enum):
+    """
+    This enum shows how the tokenization of nodes should be done, given the node N!1234 for each of the enum values
+    the outputs are:
+    Value : 1234
+    Type:   N!
+    Both_Separated: N!, 1234
+    Both_Non_Separated: N!1234
+    """
+    Value = 1
+    Type = 2
+    Both_Separated = 3
+    Both_Non_Separated = 4
+
+
+def get_slt_elements(tangent_tuple, ignore_full_relative_path=True):
     """
     This method takes an slt tuple that was produced by tangent-s and returns back its elements (s1,s2,edge,frp)
     If the ignore_frp is set false it return all the four elements otherwise returns the first three elements
-    :param tuple: the tangent-s tuple
-    :param ignore_frp: if true would just return the first three elements that are the two nodes and their relationship
+    :param tangent_tuple: the tangent-s tuple
+    :param ignore_full_relative_path: if true would just return the first three elements that are the two nodes and their relationship
     :return: return the tuple elements
     """
-    if ignore_frp:
-        return tuple.split('\t')[:3]
-    return tuple.split('\t')[:4]
+    if ignore_full_relative_path:
+        return tangent_tuple.split('\t')[:3]
+    return tangent_tuple.split('\t')[:4]
 
 
 def get_char_value(lst, node_char_map, node_char_id):
@@ -37,13 +53,14 @@ def get_char_value(lst, node_char_map, node_char_id):
     return converted_value, node_char_id
 
 
-def convert_node_elements(node_value, node_char_map, node_char_id, tokenize_all=False, tokenize_number=False):
+def convert_node_elements(node, node_char_map, node_char_id, embedding_type, tokenize_all=False, tokenize_number=False):
     """
     This method takes in node values from tangent-s (first and second elements) and convert that to fasttext values
     two parameters decides how tokenization are done, we have three modes, node type and node values are always
     separated but values of the node can be also separated. For instance "N!123" can be tokenized as "N!" "1" "2" "3"
     we can do it in two modes: only the numbers being separated  and one all the values are separated
-    :param node_value: node value (N!123 or V!a)
+    :param embedding_type: decided how the tokenization should be done
+    :param node: node value (N!123 or V!a)
     :param node_char_map: the map that keep the tokenized item from tangent-s and the assigned char value
     :param node_char_id: the last id that is assigned to a tokenized item
     :param tokenize_all: if set true all the nodes such as Numbers N! and Variable V! will have tokenized values
@@ -52,15 +69,32 @@ def convert_node_elements(node_value, node_char_map, node_char_id, tokenize_all=
     :return: return the converted value along with the last assigned id to token (of first or second elements)
     """
     lst = []
-    if "!" in node_value:
-        if node_value == "O!":
-            lst.append(node_value)
+    if "!" in node:
+        if node == "O!":
+            lst.append(node)
         else:
-            parts = node_value.split("!")
-            node_value = parts[1]
-            lst.append(node_value)
+            node_type = node.split("!")[0]
+            node_value = node.split("!")[1]
+
+            if embedding_type == Node_token.Type:
+                lst.append(node_type)
+            elif embedding_type == Node_token.Value:
+                if not tokenize_all and (not tokenize_number or node_type != "N!"):
+                    lst.append(node_value)
+                else:
+                    for val in node_value:
+                        lst.append(val)
+            elif embedding_type == Node_token.Both_Separated:
+                lst.append(node_type)
+                if not tokenize_all and (not tokenize_number or node_type != "N!"):
+                    lst.append(node_value)
+                else:
+                    for val in node_value:
+                        lst.append(val)
+            else:
+                lst.append(node)
     else:
-        lst.append(node_value)
+        lst.append(node)
     return get_char_value(lst, node_char_map, node_char_id)
 
 
@@ -85,8 +119,8 @@ def convert_path_elements(path, edge_char_map, edge_char_id):
     return converted_value, edge_char_id
 
 
-def tangent_to_fasttext(tangent_tuple_filepath, fasttext_tuple_filepath, ignore_frp=True, tokenize_all=False,
-                        tokenize_number=False):
+def tangent_to_fasttext(tangent_tuple_file_path, fasttext_tuple_file_path, ignore_full_relative_path=True,
+                        tokenize_all=False, tokenize_number=False, embedding_type=Node_token.Both_Separated):
 
     # each slt element is given unique Id so that we can convert them back in embeddings
     node_ids = 70000
@@ -95,31 +129,31 @@ def tangent_to_fasttext(tangent_tuple_filepath, fasttext_tuple_filepath, ignore_
     node_map = {}
     path_map = {}
 
-    for directory in os.listdir(tangent_tuple_filepath):
-        if not os.path.exists(fasttext_tuple_filepath+"/"+directory):
-            os.makedirs(fasttext_tuple_filepath+"/"+directory)
-        for filename in os.listdir(tangent_tuple_filepath + "/" + directory):
-            destination_file = open(fasttext_tuple_filepath + "/" + directory + "/" + filename, "w+")
-            source_file = open(tangent_tuple_filepath + "/" + directory + "/" + filename)
+    for directory in os.listdir(tangent_tuple_file_path):
+        if not os.path.exists(fasttext_tuple_file_path + "/" + directory):
+            os.makedirs(fasttext_tuple_file_path + "/" + directory)
+        for filename in os.listdir(tangent_tuple_file_path + "/" + directory):
+            destination_file = open(fasttext_tuple_file_path + "/" + directory + "/" + filename, "w+")
+            source_file = open(tangent_tuple_file_path + "/" + directory + "/" + filename)
             line = source_file.readline()
             line = line.rstrip("\n")
             while line:
                 slt_tuple = ""
-                slt_elements = get_slt_elements(line, ignore_frp=ignore_frp)
+                slt_elements = get_slt_elements(line, ignore_full_relative_path=ignore_full_relative_path)
 
-                converted_value, node_ids = convert_node_elements(slt_elements[0], node_map, node_ids,
+                converted_value, node_ids = convert_node_elements(slt_elements[0], node_map, node_ids, embedding_type,
                                                                   tokenize_all=tokenize_all,
                                                                   tokenize_number=tokenize_number)
                 slt_tuple = slt_tuple + converted_value
-                converted_value, node_ids = convert_node_elements(slt_elements[1], node_map, node_ids,
+                converted_value, node_ids = convert_node_elements(slt_elements[1], node_map, node_ids, embedding_type,
                                                                   tokenize_all=tokenize_all,
                                                                   tokenize_number=tokenize_number)
                 slt_tuple = slt_tuple + converted_value
-
                 converted_value, path_ids = convert_path_elements(slt_elements[2], path_map, path_ids)
                 slt_tuple = slt_tuple + converted_value
 
-                if len(slt_elements) == 4:
+                "Encode the full relative path"
+                if not ignore_full_relative_path:
                     converted_value, path_ids = convert_path_elements(slt_elements[3], path_map, path_ids)
                     slt_tuple = slt_tuple + converted_value
 
@@ -134,7 +168,7 @@ def main():
 
     source = '/home/bm3302/FastText/OPTTuples_W2/'
     destination = '/home/bm3302/FastText/ft_opt_2/'
-    tangent_to_fasttext(source, destination, ignore_frp=True)
+    tangent_to_fasttext(source, destination, ignore_full_relative_path=True, embedding_type=Node_token.Both_Separated)
 
 
 if __name__ == "__main__":
