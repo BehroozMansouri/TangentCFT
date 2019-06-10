@@ -1,4 +1,3 @@
-import os
 from tangent_cft_module import tangent_cft_module
 
 number_of_queries = 20
