@@ -81,9 +81,10 @@ class tangent_cft_module:
         result = {}
         numpy_lst = []
         idx = 0
+        count
         for formula_id in self.collection_formula_map:
             try:
-                formula_vector = self.get_vector_representation(self.collection_formula_map[formula_id])
+                formula_vector = numpy.array(self.get_vector_representation(self.collection_formula_map[formula_id])).reshape(1, self.configuration.vector_size)
                 numpy_lst.append(formula_vector)
                 result[idx] = formula_id
                 idx += 1
@@ -105,7 +106,7 @@ class tangent_cft_module:
         """
         query_vectors = {}
         for i in range(1, number_of_queries + 1):
-            query_vector = self.get_vector_representation(self.query_formula_map[i])
+            query_vector = numpy.array(self.get_vector_representation(self.query_formula_map[i])).reshape(1, self.configuration.vector_size)
             query_vectors[i] = Variable(torch.tensor(query_vector).double()).cuda()
 
             if save_vectors:
