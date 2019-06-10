@@ -32,7 +32,7 @@ class tangent_cft_model:
 
         "return model train time"
         train_end_time = datetime.datetime.now()
-        return train_end_time -train_start_time
+        return train_end_time - train_start_time
 
     def get_vector(self, math_concept):
         return self.model.wv[math_concept]
