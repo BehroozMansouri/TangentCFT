@@ -38,7 +38,6 @@ def tangent_to_fasttext(tangent_tuple_filepath, result_file_path, ignore_frp=Tru
                     formula += val
                 line = source_file.readline().rstrip("\n")
             filename = filename[:-4]
-            filename = directory + "\\" + filename
             destination_file.write(filename + "#~#" + formula + "\n")
             source_file.close()
     encoded_file_Collection.close()
@@ -47,7 +46,7 @@ def tangent_to_fasttext(tangent_tuple_filepath, result_file_path, ignore_frp=Tru
 
 def main():
     source = '/home/bm3302/FastText/SLTTuples_W1/'
-    destination = '/home/bm3302/FastText/'
+    destination = '/home/bm3302/FastText/s1_map'
     tangent_to_fasttext(source, destination, ignore_frp=True)
 
 
