@@ -13,22 +13,22 @@ def id_lst(start, count):
 def main():
 
     fg = configuration("config/7000")
-
+    parameter_tuner = list_creator(5, 15, 5)
     config_map = {
                     "context_window_size": [5],
-                    "file_path_fasttext": ["formula_map_opt1.txt"],
+                    "file_path_fasttext": ["/bm3302/fasttext/s1_map"],
                     "hs": [0],
                     "iter": [10],
                     "max": [6],
                     "min": [3],
-                    "negative": list_creator(5, 15, 5),
+                    "negative": parameter_tuner,
                     "ngram": [1],
                     "result_vector_file_path": ["None"],
                     "skip_gram": [1],
-                    "vector_size": [200]
+                    "vector_size": [300]
                   }
 
-    lst_id = id_lst(7000, 3)
+    lst_id = id_lst(7000, len(parameter_tuner))
     for id in lst_id:
         cfg = configuration()
         setattr(cfg, "id", id)
@@ -38,7 +38,7 @@ def main():
             if len(config_map[item]) > 1:
                 config_map[item].pop(0)
             setattr(cfg, attribute, value)
-        cfg.write_to_file("config/"+str(id))
+        cfg.write_to_file("config/config_"+str(id))
 
 
 if __name__ == '__main__':
