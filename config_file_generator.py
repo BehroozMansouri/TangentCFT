@@ -12,11 +12,10 @@ def id_lst(start, count):
 
 def main():
 
-    fg = configuration("config/7000")
-    parameter_tuner = list_creator(5, 15, 5)
+    parameter_tuner = list_creator(5, 30, 5)
     config_map = {
                     "context_window_size": [5],
-                    "file_path_fasttext": ["/bm3302/fasttext/s1_map"],
+                    "file_path_fasttext": ["/home/bm3302/FastText/s1_map/"],
                     "hs": [0],
                     "iter": [10],
                     "max": [6],
