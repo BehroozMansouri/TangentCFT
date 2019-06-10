@@ -60,7 +60,7 @@ class tangent_cft_module_formula(tangent_cft_module):
         while line:
             line = line.rstrip('\n').strip()
             formula = line.split("#~#")[1]
-            query_id = line.split("#~#")[0]
+            query_id = int(line.split("#~#")[0])
             formula_map[query_id] = formula
             line = file.readline()
         file.close()
