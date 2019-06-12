@@ -44,7 +44,10 @@ class tangent_cft_module:
         doc_id_map, doc_tensors = self.get_collection_formula_vector(save_vectors)
         query_vector_map = self.save_query_formulas_vectors(save_vectors)
 
-        sum = .0
+        self.formula_retrieval(doc_id_map, doc_tensors, query_vector_map, run_id)
+
+    def formula_retrieval(self, doc_id_map, doc_tensors, query_vector_map, run_id):
+        time_summation = .0
         counter = 0
         f = open("Retrieval_Results/res_" + str(self.configuration.id), 'w')
         for queryId in query_vector_map:
@@ -55,7 +58,7 @@ class tangent_cft_module:
             top_1000 = index_sorted[:1000]
             t2 = datetime.datetime.now()
             top_1000 = top_1000.data.cpu().numpy()
-            sum += (t2 - t1).total_seconds() * 1000.0
+            time_summation += (t2 - t1).total_seconds() * 1000.0
             counter += 1
             cos_values = torch.sort(dist, descending=True)[0][:1000].data.cpu().numpy()
             count = 1
@@ -69,7 +72,7 @@ class tangent_cft_module:
                 count += 1
         f.close()
         print("Average retrieval time:")
-        print(sum / counter)
+        print(time_summation / counter)
 
     def get_collection_formula_vector(self, save_vectors):
         """
@@ -81,7 +84,6 @@ class tangent_cft_module:
         result = {}
         numpy_lst = []
         idx = 0
-        count
         for formula_id in self.collection_formula_map:
             try:
                 formula_vector = numpy.array(self.get_vector_representation(self.collection_formula_map[formula_id])).reshape(1, self.configuration.vector_size)
