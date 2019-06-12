@@ -1,6 +1,6 @@
 import os
 from boto.cloudfront import logging
-import tangent_cft_module
+from tangent_cft_module import tangent_cft_module
 
 number_of_queries = 20
 
