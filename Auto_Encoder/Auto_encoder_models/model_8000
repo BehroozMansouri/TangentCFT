@@ -1,0 +1,20 @@
+class auto_encoder(nn.Module):
+    def __init__(self):
+        super(auto_encoder, self).__init__()
+        self.encoder = nn.Sequential(
+            nn.Linear(900, 300),
+            nn.ReLU()
+        )
+        self.decoder = nn.Sequential(
+            nn.Linear(300, 900),
+            nn.ReLU()
+        )
+
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x
+
+    def encode(self, x):
+        x = self.encoder(x)
+        return x

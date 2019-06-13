@@ -1,0 +1,12 @@
+context_window_size,20
+file_path_fasttext,/home/bm3302/FastText/o1_map/
+hs,0
+id,7023
+iter,20
+max,3
+min,1
+negative,30
+ngram,1
+result_vector_file_path,None
+skip_gram,1
+vector_size,300
