@@ -158,12 +158,12 @@ def merge_result_files(lst_directories, merge_Type, result_file_path=None):
 def dimension_reduction(map_lst, run_id):
     num_epochs = 500
     batch_size = 128
-    learning_rate = 0.001
+    learning_rate = 0.005
 
     model = auto_encoder().cuda()
     criterion = nn.MSELoss()
     optimizer = torch.optim.SGD(
-        model.parameters(), lr=learning_rate)
+        model.parameters(), lr=learning_rate, momentum=0.9)
 
     my_x = []  # a list of numpy arrays
     for formula_vector in map_lst.values():
@@ -174,7 +174,7 @@ def dimension_reduction(map_lst, run_id):
     tensor_x = torch.stack([torch.Tensor(i) for i in my_x])  # transform to torch tensors
     my_dataset = utils.TensorDataset(tensor_x)  # create your dataset
 
-    validation_split = .1
+    validation_split = .15
     shuffle_dataset = True
     random_seed = 42
 
@@ -266,7 +266,7 @@ def dimension_reduction(map_lst, run_id):
         else:
             #if not finalModel:
             loss_prev = loss_v
-            torch.save(model.state_dict(), './model'+str(run_id)+'.pth')
+            torch.save(model.state_dict(), './Auto_Encoder/Saved_Models/auto_encoder'+str(run_id)+'.pth')
             patience = patience_value
             bestEpoch = epoch
 
@@ -278,9 +278,9 @@ def dimension_reduction(map_lst, run_id):
     plt.plot([bestEpoch, bestEpoch], [min_error, max_error], color='k', linestyle='-', linewidth=2)
     plt.legend(handles=[line1,line2], loc='upper right')
     plt.show()
-    plt.savefig('train_validation_'+str(run_id)+'.png')
+    plt.savefig('./Auto_Encoder/Train_validation/train_validation_'+str(run_id)+'.png')
 
-    torch.save(model.state_dict(), './auto_encoder'+str(run_id)+'.pth')
+    torch.save(model.state_dict(), './Auto_Encoder/Saved_Models/auto_encoder'+str(run_id)+'.pth')
 
     return model
 
@@ -373,7 +373,7 @@ def formula_retrieval(doc_id_map, doc_tensors, query_vector_map, run_id):
 
 def main():
     result_file_path = None  # "/home/bm3302/FastText/Run_Result_9008"
-    run_id = 8006
+    run_id = 8007
     lst_directories = ["/home/bm3302/FastText/Run_Result_431",
                        "/home/bm3302/FastText/Run_Result_436",
                        "/home/bm3302/FastText/Run_Result_501"]

@@ -11,7 +11,7 @@ def main():
     #           "tuple, 2 for formula. The last argument shows whether to save the vectors or not.")
     #     sys.exit(1)
     id_1 = 7061#int(argv[1])
-    id_2 = 7061#int(argv[2])
+    id_2 = 7064#int(argv[2])
     embedding_type = 2#int(argv[3])
     save_id = False#bool(argv[4])
     for config_id in range(id_1, id_2+1):

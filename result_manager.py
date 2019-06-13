@@ -6,10 +6,10 @@ from configuration import configuration
 
 def main():
 
-    id_1 = 7059#int(argv[1])
-    id_2 = 7060#int(argv[2])
+    id_1 = 7061#int(argv[1])
+    id_2 = 7064#int(argv[2])
     "file path to save the result of the analysis"
-    result_file_path = "result5.csv"#argv[3]
+    result_file_path = "result6.csv"#argv[3]
     results_by_parameters(id_1, id_2, result_file_path)
 
 
