@@ -1,4 +1,7 @@
 import os
+import argparse
+
+from Embedding_Preprocessing.Arg_Parse_Tools import readable_directory
 
 
 def get_slt_elements(tuple, ignore_frp=True):
@@ -10,7 +13,6 @@ def get_slt_elements(tuple, ignore_frp=True):
 
 
 def tangent_to_fasttext(tangent_tuple_filepath, result_file_path, ignore_frp=True):
-    # each slt element is given unique Id so that we can convert them back in embeddings
     slt_ids = 60000
     slt_map = {}
     encoded_file_Collection = open(result_file_path + "Collection", "w+")
@@ -45,9 +47,24 @@ def tangent_to_fasttext(tangent_tuple_filepath, result_file_path, ignore_frp=Tru
 
 
 def main():
-    source = '/home/bm3302/FastText/SLTTuples_W2/'
-    destination = '/home/bm3302/FastText/s2_map/'
-    tangent_to_fasttext(source, destination, ignore_frp=True)
+    parser = argparse.ArgumentParser(description='Encodes Tangent Tuples to FastText Input. Each tuple is a word for '
+                                                 'fastText model with its tokenized elements as its characters. \n'
+                                                 'Example:\n Tuple:(V!X, N!12, n) --> Tokens(characters): V!,X,N!,12,n')
+
+    parser.add_argument('source_directory', metavar='source_directory', type=str, action=readable_directory,
+                        help='String, directory path of tangent formula tuples. (Each formula is in a file with its '
+                             'tuples in each line)')
+
+    parser.add_argument('destination_directory', metavar='destination_directory', type=str, action=readable_directory,
+                        help='String, directory path to save the encoded tangent formula tuples')
+
+    parser.add_argument("--frp", help="Use full relative path. (See tangent-S paper)", type=bool, default=False)
+
+    args = vars(parser.parse_args())
+    source_directory = args['source_directory']
+    destination_directory = args['destination_directory']
+    frp = args['frp']
+    tangent_to_fasttext(source_directory, destination_directory, ignore_full_relative_path=frp)
 
 
 if __name__ == "__main__":
