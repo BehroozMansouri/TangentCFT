@@ -1,0 +1,15 @@
+class auto_encoder(nn.Module):
+    def __init__(self):
+        super(auto_encoder, self).__init__()
+        self.encoder = nn.Sequential(
+            nn.Linear(900, 600),
+            nn.Tanh(),
+            nn.Linear(600, reduction_to_size),
+            nn.ReLU()
+        )
+        self.decoder = nn.Sequential(
+            nn.Linear(reduction_to_size, 600),
+            nn.Tanh(),
+            nn.Linear(600, 900),
+            nn.ReLU()
+        )
