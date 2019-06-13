@@ -1,5 +1,29 @@
 import os
 from enum import Enum
+import argparse
+from sys import argv
+
+
+def required_length(min_value, max_value):
+    class RequiredLength(argparse.Action):
+        def __call__(self, parser, args, values, option_string=None):
+            if not min_value <= (values) <= max_value:
+                msg = 'argument "{f}" requires between {min_value} and {max_value} arguments'.format(
+                    f=self.dest, min_value=min_value, max_value=max_value)
+                raise argparse.ArgumentTypeError(msg)
+            setattr(args, self.dest, values)
+    return RequiredLength
+
+
+class readable_directory(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        prospective_dir=values
+        if not os.path.isdir(prospective_dir):
+            raise argparse.ArgumentTypeError("readable_dir: {0} is not a valid path.".format(prospective_dir))
+        if os.access(prospective_dir, os.R_OK):
+            setattr(namespace, self.dest, prospective_dir)
+        else:
+            raise argparse.ArgumentTypeError("readable_dir: {0} is not a readable dir.".format(prospective_dir))
 
 
 class Node_token(Enum):
@@ -165,11 +189,32 @@ def tangent_to_fasttext(tangent_tuple_file_path, fasttext_tuple_file_path, ignor
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Encodes Tangent Tuples to FastText Input. Each tuple is a word for '
+                                                 'fastText model with its tokenized elements as its characters. \n'
+                                                 'Example:\n Tuple:(V!X, N!12, n) --> Tokens(characters): V!,X,N!,12,n')
 
-    source = '/home/bm3302/FastText/OPTTuples_W2/'
-    destination = '/home/bm3302/FastText/ft_opt_2/'
-    tangent_to_fasttext(source, destination, ignore_full_relative_path=True, embedding_type=Node_token.Both_Separated)
+    parser.add_argument('source_directory', metavar='source_directory', type=str, action=readable_directory,
+                        help='String, directory path of tangent formula tuples. (Each formula is in a file with its '
+                             'tuples in each line)')
+
+    parser.add_argument('destination_directory', metavar='destination_directory', type=str, action=readable_directory,
+                        help='String, directory path to save the encoded tangent formula tuples')
+
+    parser.add_argument("--frp", help="Use full relative path. (See tangent-S paper)", type=bool, default=False)
+
+    parser.add_argument("--tokenization", help="Tokenization type, 1:value, 2:type, 3:'type','value', 4:'type+value'",
+                        action=required_length(1, 4), type=int, default=3)
+
+    args = vars(parser.parse_args())
+
+    source_directory = args['source_directory']
+    destination_directory = args['destination_directory']
+    frp = args['frp']
+    tokenization = args['tokenization']
+
+    tangent_to_fasttext(source_directory, destination_directory, ignore_full_relative_path=frp,
+                        embedding_type=Node_token(tokenization))
 
 
 if __name__ == "__main__":
-    main()
+    main(argv)
