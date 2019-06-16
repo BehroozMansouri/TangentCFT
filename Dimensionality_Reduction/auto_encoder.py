@@ -35,11 +35,11 @@ class auto_encoder(nn.Module):
     def __init__(self):
         super(auto_encoder, self).__init__()
         self.encoder = nn.Sequential(
-            nn.Linear(900, reduction_to_size),
+            nn.Linear(600, reduction_to_size),
             nn.ReLU()
         )
         self.decoder = nn.Sequential(
-            nn.Linear(reduction_to_size, 900),
+            nn.Linear(reduction_to_size, 600),
             nn.ReLU()
         )
 
@@ -61,7 +61,6 @@ def read_train_vectors(directory_name):
     Note that this is only the train (collection) data
     """
     map_result = {}
-
     for directory in os.listdir(directory_name):
         if directory != "Queries":
             for filename in os.listdir(directory_name + "/" + directory):
@@ -156,7 +155,7 @@ def merge_result_files(lst_directories, merge_Type, result_file_path=None):
 
 
 def dimension_reduction(map_lst, run_id):
-    num_epochs = 500
+    num_epochs = 10000
     batch_size = 128
     learning_rate = 0.005
 
@@ -195,7 +194,7 @@ def dimension_reduction(map_lst, run_id):
     validation_loader = torch.utils.data.DataLoader(my_dataset, batch_size=batch_size,
                                                     sampler=valid_sampler)
 
-    loss_prev = 1000
+    loss_prev = 5000
     epoch_lst = []
     loss_validation_lst = []
     loss_training_lst = []
@@ -266,7 +265,7 @@ def dimension_reduction(map_lst, run_id):
         else:
             #if not finalModel:
             loss_prev = loss_v
-            torch.save(model.state_dict(), './Auto_Encoder/Saved_Models/auto_encoder'+str(run_id)+'.pth')
+            torch.save(model.state_dict(), 'Saved_Models/auto_encoder'+str(run_id)+'.pth')
             patience = patience_value
             bestEpoch = epoch
 
@@ -278,9 +277,9 @@ def dimension_reduction(map_lst, run_id):
     plt.plot([bestEpoch, bestEpoch], [min_error, max_error], color='k', linestyle='-', linewidth=2)
     plt.legend(handles=[line1,line2], loc='upper right')
     plt.show()
-    plt.savefig('./Auto_Encoder/Train_validation/train_validation_'+str(run_id)+'.png')
+    plt.savefig('Train_validation/train_validation_'+str(run_id)+'.png')
 
-    torch.save(model.state_dict(), './Auto_Encoder/Saved_Models/auto_encoder'+str(run_id)+'.pth')
+    torch.save(model.state_dict(), 'Saved_Models/auto_encoder'+str(run_id)+'.pth')
 
     return model
 
@@ -345,7 +344,8 @@ def apply_reduction_queries(model, map_formulas):
 def formula_retrieval(doc_id_map, doc_tensors, query_vector_map, run_id):
     sum = .0
     counter = 0
-    f = open("Retrieval_Results/res_" + str(run_id), 'w')
+    path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Retrieval_Results'))
+    f = open(path+"/res_" + str(run_id), 'w')
     for queryId in query_vector_map:
         query_vec = query_vector_map[queryId]
         t1 = datetime.datetime.now()
@@ -373,12 +373,11 @@ def formula_retrieval(doc_id_map, doc_tensors, query_vector_map, run_id):
 
 def main():
     result_file_path = None  # "/home/bm3302/FastText/Run_Result_9008"
-    run_id = 8007
+    run_id = 8010
     lst_directories = ["/home/bm3302/FastText/Run_Result_431",
-                       "/home/bm3302/FastText/Run_Result_436",
+                       #"/home/bm3302/FastText/Run_Result_436",
                        "/home/bm3302/FastText/Run_Result_501"]
     print("Merging files")
-
     merge_type = Merge_Type.Concatenate
     map_collection, map_queries = merge_result_files(lst_directories, merge_type, result_file_path)
 

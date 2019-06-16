@@ -1,0 +1,30 @@
+class auto_encoder(nn.Module):
+    def __init__(self):
+        super(auto_encoder, self).__init__()
+        self.encoder = nn.Sequential(
+            nn.Linear(900, reduction_to_size),
+            nn.ReLU()
+        )
+        self.decoder = nn.Sequential(
+            nn.Linear(reduction_to_size, 900),
+            nn.ReLU()
+        )
+
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x
+
+    def encode(self, x):
+        x = self.encoder(x)
+        return x
+
+
+num_epochs = 500
+    batch_size = 128
+    learning_rate = 0.005
+
+    model = auto_encoder().cuda()
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.SGD(
+        model.parameters(), lr=learning_rate, momentum=0.9)
