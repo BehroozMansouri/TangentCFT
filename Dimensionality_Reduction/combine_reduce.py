@@ -1,29 +1,27 @@
-import datetime
-import os
 from enum import Enum
-
-import numpy as np
-import os.path
-
-from torch import nn
-import torch
-import matplotlib.pyplot as plt
-import torch.utils.data as utils
-from torch.autograd import Variable
-import torch.nn.functional as F
-from tqdm import trange
-from torch.utils.data.sampler import SubsetRandomSampler
-import matplotlib
-matplotlib.use('Agg')
 from sklearn.decomposition import TruncatedSVD
 from sklearn.decomposition import PCA
 from sklearn.decomposition import FastICA
 from sklearn.manifold import TSNE
+from torch import nn
+from tqdm import trange
+from torch.utils.data.sampler import SubsetRandomSampler
+from torch.autograd import Variable
 
-
+import numpy as np
+import os.path
+import datetime
+import os
+import torch
+import matplotlib.pyplot as plt
+import torch.utils.data as utils
+import torch.nn.functional as F
+import matplotlib
+matplotlib.use('Agg')
 os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 use_cuda = torch.cuda.is_available()
 reduction_to_size = 2
+
 
 
 class Merge_Type(Enum):
@@ -185,9 +183,6 @@ def dimension_reduction(map_lst, run_id):
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
 
-    print(model.state_dict())
-    print(optimizer.state_dict())
-
     my_x = []  # a list of numpy arrays
     for formula_vector in map_lst.values():
         data = torch.from_numpy(formula_vector)
@@ -287,24 +282,24 @@ def dimension_reduction(map_lst, run_id):
             else:
                 patience -= 1
         else:
-            #if not finalModel:
+            # if not finalModel:
             loss_prev = loss_v
-            torch.save(model.state_dict(), 'Saved_Models/auto_encoder_model_'+str(run_id)+'.pth')
+            torch.save(model.state_dict(), 'Saved_Models/auto_encoder_model_' + str(run_id) + '.pth')
             torch.save(model.state_dict(), 'Saved_Models/auto_encoder_parameters_' + str(run_id) + '.pth')
             patience = patience_value
             bestEpoch = epoch
 
     ##################################################Loss_Epoch curve plot
-    line1, =  plt.plot(epoch_lst, loss_training_lst, '-r', label='train')
-    line2, =  plt.plot(epoch_lst, loss_validation_lst, '-b', label='validation')
+    line1, = plt.plot(epoch_lst, loss_training_lst, '-r', label='train')
+    line2, = plt.plot(epoch_lst, loss_validation_lst, '-b', label='validation')
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.plot([bestEpoch, bestEpoch], [min_error, max_error], color='k', linestyle='-', linewidth=2)
-    plt.legend(handles=[line1,line2], loc='upper right')
+    plt.legend(handles=[line1, line2], loc='upper right')
     plt.show()
-    plt.savefig('Train_validation/train_validation_'+str(run_id)+'.png')
+    plt.savefig('Train_validation/train_validation_' + str(run_id) + '.png')
 
-    torch.save(model.state_dict(), 'Saved_Models/auto_encoder'+str(run_id)+'.pth')
+    torch.save(model.state_dict(), 'Saved_Models/auto_encoder' + str(run_id) + '.pth')
 
     return model
 
@@ -368,7 +363,7 @@ def formula_retrieval(doc_id_map, doc_tensors, query_vector_map, run_id):
     sum = .0
     counter = 0
     path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Retrieval_Results'))
-    f = open(path+"/res_" + str(run_id), 'w')
+    f = open(path + "/res_" + str(run_id), 'w')
     for queryId in query_vector_map:
         query_vec = query_vector_map[queryId]
         t1 = datetime.datetime.now()
@@ -422,25 +417,27 @@ def apply_TSNE(map_collection):
 
 
 def main():
-    #num_epochs = 2500
-    #batch_size = 128
-    #learning_rate = 0.005
+    # num_epochs = 2500
+    # batch_size = 128
+    # learning_rate = 0.005
 
-    #model = auto_encoder().cuda()
-    #criterion = nn.MSELoss()
-    #optimizer = torch.optim.SGD(
-    #model.parameters(), lr=learning_rate, momentum=0.9)
+    # model = auto_encoder().cuda()
+    # criterion = nn.MSELoss()
+    # optimizer = torch.optim.SGD(
+    # model.parameters(), lr=learning_rate, momentum=0.9)
 
-    #print(model.state_dict())
-    #print(optimizer.state_dict())
-    #torch.save(optimizer.state_dict(), '/home/bm3302/PycharmProjects/TangentCFT/Dimensionality_Reduction/Saved_Models/test_' + str(100) + '.pth')
-    #map = torch.load('/home/bm3302/PycharmProjects/TangentCFT/Dimensionality_Reduction/Saved_Models/test_' + str(100) + '.pth')
+    # print(model.state_dict())
+    # print(optimizer.state_dict())
+    # torch.save(optimizer.state_dict(), '/home/bm3302/PycharmProjects/TangentCFT/Dimensionality_Reduction/Saved_Models/test_' + str(100) + '.pth')
+    # map = torch.load('/home/bm3302/PycharmProjects/TangentCFT/Dimensionality_Reduction/Saved_Models/test_' + str(100) + '.pth')
     result_file_path = None
     run_id = 100
     lst_directories = ["/home/bm3302/FastText/Run_Result_431",
                        "/home/bm3302/FastText/Run_Result_436",
                        "/home/bm3302/FastText/Run_Result_501"]
     print("Merging files")
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    print(dir_path)
     merge_type = Merge_Type.Concatenate
     map_collection, map_queries = merge_result_files(lst_directories, merge_type, result_file_path)
 
