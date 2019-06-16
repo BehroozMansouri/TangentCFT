@@ -1,4 +1,4 @@
-from configuration import configuration
+from Configuration.configuration import configuration
 import numpy as np
 
 

@@ -86,7 +86,8 @@ def apply_svd(matrix, component_size):
 def apply_pca(matrix, component_size):
     print("Applying PCA")
     pca = PCA(n_components='mle', svd_solver='full')
-    result = pca.fit_transform(matrix)
+    result = pca.fit(matrix)
+    pca.transform(matrix)
     return result
 
 

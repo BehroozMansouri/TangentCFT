@@ -1,7 +1,6 @@
 import subprocess
 import os.path
-from sys import argv
-from configuration import configuration
+from Configuration.configuration import configuration
 
 
 def main():

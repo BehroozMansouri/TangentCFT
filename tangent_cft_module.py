@@ -1,7 +1,7 @@
 import datetime
 import os
 import numpy
-from configuration import configuration
+from Configuration.configuration import configuration
 from tangent_cft_model import tangent_cft_model
 from torch.autograd import Variable
 import torch

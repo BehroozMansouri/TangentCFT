@@ -210,8 +210,7 @@ def kfold2(foldId):
     fold_out.close()
 
 def main():
-    #print(trecEval("/home/bm3302/FastText/ResultFiles/judge.dat","/home/bm3302/FastText/ResultFiles/tangent-s.dat"))
-    #foldId = int(argv[1])
+
     for foldId in range(1,21):
         kfold(foldId)
 if __name__ == '__main__':

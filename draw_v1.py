@@ -33,7 +33,7 @@ def read_label(file_path):
 
 def draw_map(file_path, label_file_path):
     map = read_file_address(file_path)
-    labels2 = read_label(label_file_path)
+    #labels2 = read_label(label_file_path)
     x = []
     y = []
     coulours = ["red", "blue", "green", "purple", "black", "silver", "cyan", "gold", "violet"]
@@ -82,7 +82,7 @@ def draw_map(file_path, label_file_path):
         end = start + 20
         ax.scatter(x[start:end], y[start:end], c=color[start:end], marker=markers[key-1], alpha=0.9)
 
-    ax.legend(handles=legend_info, loc='upper right',ncol=2, prop={'size': 8})
+    ax.legend(handles=legend_info, loc='upper right', ncol=2, prop={'size': 8})
 
     # for i in range(len(x)):
     #     plt.text(x=x[i], y=y[i], s=labels2[i])

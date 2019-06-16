@@ -16,9 +16,9 @@ def main():
     save_id = False#bool(argv[4])
     for config_id in range(id_1, id_2+1):
         if embedding_type == 1:
-            model = tangent_cft_module_tuple("config/config_" + str(config_id))
+            model = tangent_cft_module_tuple("Configuration/config/config_" + str(config_id))
         else:
-            model = tangent_cft_module_formula("config/config_" + str(config_id))
+            model = tangent_cft_module_formula("Configuration/config/config_" + str(config_id))
         model.run(config_id, save_id)
 
 
