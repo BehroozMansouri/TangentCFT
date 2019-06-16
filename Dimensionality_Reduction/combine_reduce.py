@@ -61,7 +61,7 @@ class auto_encoder(nn.Module):
         return x
 
     def transform(self, vector):
-        data = torch.from_numpy(vector[0])
+        data = torch.from_numpy(vector)
         data = data.float()
         data = Variable(data).cuda()
         temp = self.encode(data)
