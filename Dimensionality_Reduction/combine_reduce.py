@@ -17,11 +17,12 @@ import matplotlib.pyplot as plt
 import torch.utils.data as utils
 import torch.nn.functional as F
 import matplotlib
+import argparse
+
 matplotlib.use('Agg')
 os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 use_cuda = torch.cuda.is_available()
 reduction_to_size = 2
-
 
 
 class Merge_Type(Enum):
@@ -35,6 +36,7 @@ class Reduce_Type(Enum):
     svd = 3
     tsne = 4
     autoencoder = 5
+    no_reduction = 6
 
 
 def create_destination(result):
@@ -417,6 +419,25 @@ def apply_TSNE(map_collection):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='This module helps combine different embeddings of math formulas'
+                                                 'and also provides means of dimensionality.')
+
+    parser.add_argument('Merge type', metavar='merge_type', type=int, action=readable_directory,
+                        help='0 for concatenating vectors and 1 for summing them up')
+    parser.add_argument('Run Id', metavar='run_id', type=int, action=readable_directory,
+                        help='0 for concatenating vectors and 1 for summing them up')
+    parser.add_argument('Reduction type', metavar='reduction_type', type=int, action=readable_directory,
+                        help='String, directory path to save the encoded tangent formula tuples')
+
+    parser.add_argument("--frp", help="Use full relative path. (See tangent-S paper)", type=bool, default=False)
+
+    args = vars(parser.parse_args())
+
+    source_directory = args['source_directory']
+    destination_directory = args['destination_directory']
+    frp = args['frp']
+
+
     # num_epochs = 2500
     # batch_size = 128
     # learning_rate = 0.005
@@ -438,6 +459,7 @@ def main():
     print("Merging files")
     dir_path = os.path.dirname(os.path.realpath(__file__))
     print(dir_path)
+
     merge_type = Merge_Type.Concatenate
     map_collection, map_queries = merge_result_files(lst_directories, merge_type, result_file_path)
 
