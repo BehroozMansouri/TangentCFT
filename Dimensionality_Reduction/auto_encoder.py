@@ -19,6 +19,8 @@ matplotlib.use('Agg')
 os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 use_cuda = torch.cuda.is_available()
 reduction_to_size = 300
+original_size = 900
+
 
 class Merge_Type(Enum):
     Sum = 1
@@ -35,11 +37,11 @@ class auto_encoder(nn.Module):
     def __init__(self):
         super(auto_encoder, self).__init__()
         self.encoder = nn.Sequential(
-            nn.Linear(600, reduction_to_size),
+            nn.Linear(original_size, reduction_to_size),
             nn.ReLU()
         )
         self.decoder = nn.Sequential(
-            nn.Linear(reduction_to_size, 600),
+            nn.Linear(reduction_to_size, original_size),
             nn.ReLU()
         )
 
@@ -155,7 +157,7 @@ def merge_result_files(lst_directories, merge_Type, result_file_path=None):
 
 
 def dimension_reduction(map_lst, run_id):
-    num_epochs = 10000
+    num_epochs = 2500
     batch_size = 128
     learning_rate = 0.005
 
@@ -373,9 +375,9 @@ def formula_retrieval(doc_id_map, doc_tensors, query_vector_map, run_id):
 
 def main():
     result_file_path = None  # "/home/bm3302/FastText/Run_Result_9008"
-    run_id = 8010
+    run_id = 8009
     lst_directories = ["/home/bm3302/FastText/Run_Result_431",
-                       #"/home/bm3302/FastText/Run_Result_436",
+                       "/home/bm3302/FastText/Run_Result_436",
                        "/home/bm3302/FastText/Run_Result_501"]
     print("Merging files")
     merge_type = Merge_Type.Concatenate

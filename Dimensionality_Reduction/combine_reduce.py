@@ -64,7 +64,7 @@ class auto_encoder(nn.Module):
         data = torch.from_numpy(vector)
         data = data.float()
         data = Variable(data).cuda()
-        temp = self.encode(data)
+        temp = self.encoder(data)
         temp = temp.detach().cpu().numpy()
         formula_vector = temp.reshape(1, reduction_to_size)
         return formula_vector
@@ -354,7 +354,7 @@ def apply_reduction_queries(model, map_formulas, model_type):
             formula_vector = model.transform(vector)
         else:
             formula_vector = model.transform([vector])
-            formula_vector = torch.from_numpy(formula_vector).cuda()
+        formula_vector = Variable(torch.tensor(formula_vector).double()).cuda()
         result[formula_id] = formula_vector
     return result
 
@@ -441,7 +441,7 @@ def main():
     merge_type = Merge_Type.Concatenate
     map_collection, map_queries = merge_result_files(lst_directories, merge_type, result_file_path)
 
-    reduce_type = Reduce_Type.autoencoder
+    reduce_type = Reduce_Type.pca
 
     if reduce_type == Reduce_Type.pca:
         model = apply_pca(map_collection)
