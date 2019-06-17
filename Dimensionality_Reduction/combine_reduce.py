@@ -422,12 +422,11 @@ def main():
     parser = argparse.ArgumentParser(description='This module helps combine different embeddings of math formulas'
                                                  'and also provides means of dimensionality.')
 
-    parser.add_argument('Merge type', metavar='merge_type', type=int, action=readable_directory,
+    parser.add_argument('Merge type', metavar='merge_type', type=int, choices=range(0, 2),
                         help='0 for concatenating vectors and 1 for summing them up')
-    parser.add_argument('Run Id', metavar='run_id', type=int, action=readable_directory,
-                        help='0 for concatenating vectors and 1 for summing them up')
-    parser.add_argument('Reduction type', metavar='reduction_type', type=int, action=readable_directory,
-                        help='String, directory path to save the encoded tangent formula tuples')
+    parser.add_argument('Reduction type', metavar='reduction_type', type=int, choices=range(1, 7),
+                        help='Reduction type: pca = 1, ica = 2, svd = 3, tsne = 4, autoencoder = 5, no_reduction = 6')
+    parser.add_argument('Run Id', metavar='run_id', type=int, help='Run Id to save models and results.')
 
     parser.add_argument("--frp", help="Use full relative path. (See tangent-S paper)", type=bool, default=False)
 
@@ -435,35 +434,20 @@ def main():
 
     source_directory = args['source_directory']
     destination_directory = args['destination_directory']
-    frp = args['frp']
 
 
-    # num_epochs = 2500
-    # batch_size = 128
-    # learning_rate = 0.005
-
-    # model = auto_encoder().cuda()
-    # criterion = nn.MSELoss()
-    # optimizer = torch.optim.SGD(
-    # model.parameters(), lr=learning_rate, momentum=0.9)
-
-    # print(model.state_dict())
-    # print(optimizer.state_dict())
-    # torch.save(optimizer.state_dict(), '/home/bm3302/PycharmProjects/TangentCFT/Dimensionality_Reduction/Saved_Models/test_' + str(100) + '.pth')
-    # map = torch.load('/home/bm3302/PycharmProjects/TangentCFT/Dimensionality_Reduction/Saved_Models/test_' + str(100) + '.pth')
     result_file_path = None
-    run_id = 100
+    run_id = args['run_id']
+    merge_t = args['merge_type']
+    reduction_t = args['reduction_type']
     lst_directories = ["/home/bm3302/FastText/Run_Result_431",
                        "/home/bm3302/FastText/Run_Result_436",
                        "/home/bm3302/FastText/Run_Result_501"]
-    print("Merging files")
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    print(dir_path)
 
-    merge_type = Merge_Type.Concatenate
+    merge_type = Merge_Type(merge_t)
+    reduce_type = Reduce_Type(reduction_t)
+
     map_collection, map_queries = merge_result_files(lst_directories, merge_type, result_file_path)
-
-    reduce_type = Reduce_Type.pca
 
     if reduce_type == Reduce_Type.pca:
         model = apply_pca(map_collection)
