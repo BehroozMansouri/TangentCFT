@@ -1,6 +1,12 @@
 from Configuration.configuration import configuration
 import numpy as np
 
+"""
+This module helps for easily creating configuration files for training the fastText model.
+list_creator function return set of values that are going to be tested.
+id_lst returns the list of configuration id based on the length of the parameter that is going be tuned. 
+"""
+
 
 def list_creator(start, end, step):
     return (np.arange(start, end+1, step)).tolist()
