@@ -418,37 +418,8 @@ def apply_TSNE(map_collection):
     return TSNE(n_components=reduction_to_size).fit(map_collection.values())
 
 
-def main():
-    parser = argparse.ArgumentParser(description='This module helps combine different embeddings of math formulas'
-                                                 'and also provides means of dimensionality.')
-
-    parser.add_argument('Merge type', metavar='merge_type', type=int, choices=range(0, 2),
-                        help='0 for concatenating vectors and 1 for summing them up')
-    parser.add_argument('Reduction type', metavar='reduction_type', type=int, choices=range(1, 7),
-                        help='Reduction type: pca = 1, ica = 2, svd = 3, tsne = 4, autoencoder = 5, no_reduction = 6')
-    parser.add_argument('Run Id', metavar='run_id', type=int, help='Run Id to save models and results.')
-
-    parser.add_argument("--frp", help="Use full relative path. (See tangent-S paper)", type=bool, default=False)
-
-    args = vars(parser.parse_args())
-
-    source_directory = args['source_directory']
-    destination_directory = args['destination_directory']
-
-
-    result_file_path = None
-    run_id = args['run_id']
-    merge_t = args['merge_type']
-    reduction_t = args['reduction_type']
-    lst_directories = ["/home/bm3302/FastText/Run_Result_431",
-                       "/home/bm3302/FastText/Run_Result_436",
-                       "/home/bm3302/FastText/Run_Result_501"]
-
-    merge_type = Merge_Type(merge_t)
-    reduce_type = Reduce_Type(reduction_t)
-
+def combine_and_reduce(lst_directories, merge_type, reduce_type, result_file_path, run_id):
     map_collection, map_queries = merge_result_files(lst_directories, merge_type, result_file_path)
-
     if reduce_type == Reduce_Type.pca:
         model = apply_pca(map_collection)
     elif reduce_type == Reduce_Type.ica:
@@ -459,11 +430,33 @@ def main():
         model = apply_svd(map_collection)
     elif reduce_type == Reduce_Type.autoencoder:
         model = dimension_reduction(map_collection, run_id)
-
     doc_id_map, doc_tensors = apply_reduction_collection(model, map_collection, reduce_type)
     query_vector_map = apply_reduction_queries(model, map_queries, reduce_type)
-
     formula_retrieval(doc_id_map, doc_tensors, query_vector_map, run_id)
+
+
+def main():
+    parser = argparse.ArgumentParser(description='This module helps combine different embeddings of math formulas'
+                                                 'and also provides means of dimensionality.')
+    parser.add_argument('-mt', metavar='merge_type', type=int, choices=range(0, 2),
+                        help='0 for concatenating vectors and 1 for summing them up', default=0)
+    parser.add_argument('-rt', metavar='reduction_type', type=int, choices=range(1, 7),
+                        help='Reduction type: pca = 1, ica = 2, svd = 3, tsne = 4, autoencoder = 5, no_reduction = 6')
+    parser.add_argument('-ri', metavar='run_id', type=int, help='Run Id to save models and results.', required=True)
+    parser.add_argument('-lr', nargs='+', help='List of result vectors to combine', required=True, type=str)
+    parser.add_argument('--rp', help='Directory to save combination and reduction results', type=str, default=None)
+
+    args = vars(parser.parse_args())
+
+    result_file_path = args['rp']
+    run_id = args['ri']
+    merge_t = args['mt']
+    reduction_t = args['rt']
+    lst_directories = args['lr']
+
+    merge_type = Merge_Type(merge_t)
+    reduce_type = Reduce_Type(reduction_t)
+    combine_and_reduce(lst_directories, merge_type, reduce_type, result_file_path, run_id)
 
 
 if __name__ == '__main__':
