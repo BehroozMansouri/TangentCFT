@@ -37,10 +37,14 @@ class auto_encoder(nn.Module):
     def __init__(self):
         super(auto_encoder, self).__init__()
         self.encoder = nn.Sequential(
+            nn.Linear(original_size, original_size),
+            nn.ReLU(),
             nn.Linear(original_size, reduction_to_size),
             nn.ReLU()
         )
         self.decoder = nn.Sequential(
+            nn.Linear(reduction_to_size, reduction_to_size),
+            nn.ReLU(),
             nn.Linear(reduction_to_size, original_size),
             nn.ReLU()
         )
@@ -375,7 +379,7 @@ def formula_retrieval(doc_id_map, doc_tensors, query_vector_map, run_id):
 
 def main():
     result_file_path = None  # "/home/bm3302/FastText/Run_Result_9008"
-    run_id = 8009
+    run_id = 8011
     lst_directories = ["/home/bm3302/FastText/Run_Result_431",
                        "/home/bm3302/FastText/Run_Result_436",
                        "/home/bm3302/FastText/Run_Result_501"]
