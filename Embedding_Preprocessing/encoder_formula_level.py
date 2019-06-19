@@ -1,7 +1,7 @@
 import os
 import argparse
 
-from Embedding_Preprocessing.Arg_Parse_Tools import readable_directory
+from Arg_Parse_Tools import readable_directory
 
 
 def get_slt_elements(tuple, ignore_frp=True):
@@ -51,18 +51,18 @@ def main():
                                                  'fastText model with its tokenized elements as its characters. \n'
                                                  'Example:\n Tuple:(V!X, N!12, n) --> Tokens(characters): V!,X,N!,12,n')
 
-    parser.add_argument('source_directory', metavar='source_directory', type=str, action=readable_directory,
+    parser.add_argument('-sd', metavar='source_directory', type=str, action=readable_directory,
                         help='String, directory path of tangent formula tuples. (Each formula is in a file with its '
-                             'tuples in each line)')
+                             'tuples in each line)', required=True)
 
-    parser.add_argument('destination_directory', metavar='destination_directory', type=str, action=readable_directory,
-                        help='String, directory path to save the encoded tangent formula tuples')
+    parser.add_argument('-dd', metavar='destination_directory', type=str, action=readable_directory,
+                        help='String, directory path to save the encoded tangent formula tuples', required=True)
 
     parser.add_argument("--frp", help="Use full relative path. (See tangent-S paper)", type=bool, default=False)
 
     args = vars(parser.parse_args())
-    source_directory = args['source_directory']
-    destination_directory = args['destination_directory']
+    source_directory = args['sd']
+    destination_directory = args['dd']
     frp = args['frp']
     tangent_to_fasttext(source_directory, destination_directory, ignore_full_relative_path=frp)
 
