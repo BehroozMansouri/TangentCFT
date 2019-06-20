@@ -7,4 +7,5 @@ As mathematical formuals are rare and unique, one property we should be aware of
 Here are the steps to do the Tangent-CFT embeddings. It is assumed that, tuples for each formula is in a separate file, with each tuple located in a line.
 
 </bold> Step 1: Generating the encoded values.
-  Using formula or tuple level encoder(located in Embedding Preprocessing directory), specify the directory where the formula tuples are at (-sd parameter) 
+  Using formula or tuple level encoder(located in Embedding Preprocessing directory), specify the directory where the formula tuples are at (-sd) and where to save the encoded values (-dd).  
+</bold> Step 2: 
