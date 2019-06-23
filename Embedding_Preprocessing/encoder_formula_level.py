@@ -14,13 +14,13 @@ def get_slt_elements(tuple, ignore_frp=True):
 def tangent_to_fasttext(tangent_tuple_filepath, result_file_path, ignore_frp=True):
     slt_ids = 60000
     slt_map = {}
-    encoded_file_Collection = open(result_file_path + "Collection", "w+")
-    encoded_file_Queries = open(result_file_path + "Queries", "w+")
+    encoded_file_collection = open(result_file_path + "Collection", "w+")
+    encoded_file_queries = open(result_file_path + "Queries", "w+")
     for directory in os.listdir(tangent_tuple_filepath):
         if directory != "Queries":
-            destination_file = encoded_file_Collection
+            destination_file = encoded_file_collection
         else:
-            destination_file = encoded_file_Queries
+            destination_file = encoded_file_queries
         for filename in os.listdir(tangent_tuple_filepath + "/" + directory):
 
             source_file = open(tangent_tuple_filepath + "/" + directory + "/" + filename)
@@ -41,8 +41,8 @@ def tangent_to_fasttext(tangent_tuple_filepath, result_file_path, ignore_frp=Tru
             filename = filename[:-4]
             destination_file.write(filename + "#~#" + formula + "\n")
             source_file.close()
-    encoded_file_Collection.close()
-    encoded_file_Queries.close()
+    encoded_file_collection.close()
+    encoded_file_queries.close()
 
 
 def main():
