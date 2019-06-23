@@ -31,17 +31,16 @@ def read_label(file_path):
     return lst
 
 
-def draw_map(file_path, label_file_path):
+def draw_map(file_path):
     map = read_file_address(file_path)
-    #labels2 = read_label(label_file_path)
     x = []
     y = []
-    coulours = ["red", "blue", "green", "purple", "black", "silver", "cyan", "gold", "violet"]
-    markers = ['o', '*','X', '^','D', 'h','d', 'v','s']
+
+    lst_colors = ["red", "blue", "green", "purple", "black", "silver", "cyan", "gold", "violet"]
+    markers = ['o', '*', 'X', '^', 'D', 'h', 'd', 'v', 's']
     labels = ["Matrix", "Integral", "Series", "Limit", "Logarithm", "Trigonometric", "Set Theory", "Probability", "Derivative"]
     color = []
     marker = []
-    # labels = []
     max_x = -100
     min_x = 100
     max_y = -100
@@ -59,20 +58,17 @@ def draw_map(file_path, label_file_path):
                 max_y = item[1]
             elif item[0] < min_y:
                 min_y = item[0]
-            color.append(coulours[int(key) - 1])
+            color.append(lst_colors[int(key) - 1])
             marker.append(markers[(int(key))-1])
 
     x_range = max_x - min_x
     y_range = max_y - min_y
-    marker = np.array(marker)
-    # x = (x - min_x) / x_range
-    # y = (y - min_y) / y_range
 
     x = (2 * (x - min_x) / x_range) - 1
     y = (2 * (y - min_y) / y_range) - 1
     legend_info = []
-    for counter in range(0, len(coulours)):
-        legend_info.append(Line2D([0], [0], color='w', label=labels[counter], markerfacecolor=coulours[counter],
+    for counter in range(0, len(lst_colors)):
+        legend_info.append(Line2D([0], [0], color='w', label=labels[counter], markerfacecolor=lst_colors[counter],
                                   marker=markers[counter], markersize=8))
 
     fig, ax = plt.subplots()
@@ -83,34 +79,15 @@ def draw_map(file_path, label_file_path):
         ax.scatter(x[start:end], y[start:end], c=color[start:end], marker=markers[key-1], alpha=0.9)
 
     ax.legend(handles=legend_info, loc='upper right', ncol=2, prop={'size': 8})
-
-    # for i in range(len(x)):
-    #     plt.text(x=x[i], y=y[i], s=labels2[i])
-
-
-    # for i in range(len(x)):
-    #     plt.text(x=x[i], y=y[i], s=labels[i])
-    # plt.text(x, y, "test", fontsize=9)
-    # plt.legend(["Matrix1"])#,"Integral","Series","Limit","Logarithm","Trigonometric","Set Theory","Probability","Derivative"])
-    # plt.legend(["Matrix2"])
     plt.show()
 
 
 def main():
-    # s = [u'+', u'+', u'o']
-    # col = ['r', 'r', 'g']
-    # x = np.array([1, 2, 3])
-    # y = np.array([4, 5, 6])
-    #
-    # for _s, c, _x, _y in zip(s, col, x, y):
-    #     plt.scatter(_x, _y, marker=_s, c=c)
-    #
-    # plt.xlim(0, 4)
-    # plt.ylim(0, 8)
-    #
-    # plt.show()
-
-    draw_map("/home/bm3302/FastText/formula_tsne1", "/home/bm3302/FastText/formula_tsne1")
+    """
+    A sample drawing tool, takes the directory of
+    :return:
+    """
+    draw_map("formula_tsne")
 
 
 if __name__ == '__main__':
