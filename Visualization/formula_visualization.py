@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
+
 # Create data
 def read_file_address(file_path):
     file = open(file_path)
@@ -84,7 +85,10 @@ def draw_map(file_path):
 
 def main():
     """
-    A sample drawing tool, takes the directory of
+    A sample drawing tool, takes the directory of formulas on the file "formula_tsne".
+    and read the vectors from the directory where vector representation of formulas (on which T-SNE is applied)
+    are located.
+
     :return:
     """
     draw_map("formula_tsne")
