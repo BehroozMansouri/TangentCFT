@@ -2,7 +2,8 @@ import os
 from enum import Enum
 import argparse
 
-from Arg_Parse_Tools import readable_directory, required_length
+from Tools.Arg_Parse_Tools import readable_directory, required_length
+
 
 
 class Node_token(Enum):

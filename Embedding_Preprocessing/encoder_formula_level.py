@@ -1,7 +1,6 @@
 import os
 import argparse
-
-from Arg_Parse_Tools import readable_directory
+from Tools.Arg_Parse_Tools import readable_directory
 
 
 def get_slt_elements(tuple, ignore_frp=True):
