@@ -21,7 +21,7 @@ def main():
     parser.add_argument('-cid', metavar='config_id', type=int, help='Configuration file.', required=True)
     parser.add_argument('-et', help='Embedding type; 1 for tuple level, 2 for formula level', choices=range(1, 3),
                         required=True, type=int)
-    parser.add_argument('--sr', metavar='merge_type', type=bool,
+    parser.add_argument('--sr', metavar='save_vectors', type=bool,
                         help='If true saves the vector representation of formulas', default=False)
 
     args = vars(parser.parse_args())
