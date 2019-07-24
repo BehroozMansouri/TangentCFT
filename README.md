@@ -12,16 +12,15 @@ To evaluate our embedding model we used [NTCIR-12 dataset] (https://www.cs.rit.e
 Here are the steps to do the Tangent-CFT embeddings. It is assumed that, tuples for each formula are extracted beforehand using Tangent-S (see [paper](https://dl.acm.org/citation.cfm?id=3080748) and [code](https://www.cs.rit.edu/~dprl/files/release_tangent_S.zip) ) in a separate file, with each tuple located in a line. With that assumption, the following steps are needed before training the model:
 
 * **Generating the encoded values.** Using formula or tuple level encoder(located in Embedding Pre-processing directory), specify the directory where the formula tuples are at (-sd) and where to save the encoded values (-dd). Parameter --frp take value True or False, with value True ignoring the full relative path. Finally, --tokenization decided how the tuples should be encoded. It should be an integer between 1 to 4, with value 3 as the default. Given a tuple in form of (V!v, N!12, a), tokenization in each of the four modes will create the following characters:
-* 1. v,12,a
-* 2. V!,N!,a
-* 3. V!,v,N!,12,a
-* 4. V!v,N!12,a
+ 1. v,12,a
+ 2. V!,N!,a
+ 3. V!,v,N!,12,a
+ 4. V!v,N!12,a
 
-
-Here is an example:
+Here is an example to run tuple-level encoder:
 
 ```
- python3 encoder_tuple_level.py -sd tuple_directory -dd encoded_tuple_directory 
+ python3 encoder_tuple_level.py -sd tuple_directory -dd encoded_tuple_directory --frp True --tokenization 3
 ```
 
 In this example 
