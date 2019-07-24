@@ -3,10 +3,10 @@ Tangent Combined FastText (Tangent-CFT) is a embedding model for mathematical fo
 We introduce a new formula embedding model that we use with two hierarchical representations, (1) Symbol Layout Trees (SLTs) for appearance, and (2) Operator Trees (OPTs) for mathematical content. Following the approach of graph embeddings such as DeepWalk, we generate tuples representing paths between pairs of symbols depth-first, embed tuples using the fastText n-gram embedding model, and then represent an SLT or OPT by its average tuple embedding vector. We then combine SLT and OPT embeddings, leading to state-of-the-art results for the formula retrieval task of NTCIR-12.
 
 # Requirements
-The codebase is implemented in Python 3.6. Package versions used for development are in [requirement.txt] (https://github.com/BehroozMansouri/TangentCFT/blob/master/requirements.txt) file.
+The codebase is implemented in Python 3.6. Package versions used for development are in [requirement.txt](https://github.com/BehroozMansouri/TangentCFT/blob/master/requirements.txt) file.
 
 # Dataset
-To evaluate our embedding model we used [NTCIR-12 dataset] (https://www.cs.rit.edu/~rlaz/NTCIR-12_MathIR_Wikipedia_Corpus.zip), focusing on formula retrieval task. The collection contains over 590000 mathematical formulas from Wikipedia with 20 formula queries with their relevant formulas. For comparison with previous approaches we used bpref score to evaluate the top-1000 relevant formulas. 
+To evaluate our embedding model we used [NTCIR-12 dataset](https://www.cs.rit.edu/~rlaz/NTCIR-12_MathIR_Wikipedia_Corpus.zip), focusing on formula retrieval task. The collection contains over 590000 mathematical formulas from Wikipedia with 20 formula queries with their relevant formulas. For comparison with previous approaches we used bpref score to evaluate the top-1000 relevant formulas. 
 
 # Running TangentCFT
 Here are the steps to do the Tangent-CFT embeddings. It is assumed that, tuples for each formula are extracted beforehand using Tangent-S (see [paper](https://dl.acm.org/citation.cfm?id=3080748) and [code](https://www.cs.rit.edu/~dprl/files/release_tangent_S.zip) ) in a separate file, with each tuple located in a line. With that assumption, the following steps are needed before training the model:
@@ -42,9 +42,8 @@ vector_size,300
 ```
 python3 runModule.py -cid 100 101 --sv True
 ```
+* **Checking the retrieval results.** After the model is trained and the retrieval is done, the results are saved the directory "Retrieval_Results" in format of res_id where id is the configuration id. In each line of the result file, there is the query id followed by relevant formula id, its rank, the similarity score and run id. TangentCFT results on NTCIR-12 dataset is Retrieval_Results directory as the sample. To evaluate the results, the judge file of NTCIR-12 task, is located in the Evaluation directory with [Trec_eval tool](https://trec.nist.gov/trec_eval/). 
 
-
-* **Checking the retrieval results.** The 
 * **Combineing different models**
 
 # References
