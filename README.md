@@ -44,7 +44,8 @@ python3 runModule.py -cid 100 101 --sv True
 ```
 * **Checking the retrieval results.** After the model is trained and the retrieval is done, the results are saved the directory "Retrieval_Results" in format of res_id where id is the configuration id. In each line of the result file, there is the query id followed by relevant formula id, its rank, the similarity score and run id. TangentCFT results on NTCIR-12 dataset is Retrieval_Results directory as the sample. To evaluate the results, the judge file of NTCIR-12 task, is located in the Evaluation directory with [Trec_eval tool](https://trec.nist.gov/trec_eval/). 
 
-* **Combineing different models**
+* **Combineing different models.** After training different models using Symbol layout trees (SLTs) or Operator trees (OPTs), one may be intersted in combining the results. So for a given formula, there can be different vector representations based on SLTs or OPTs or different configuration. 
+We provide different means of combining the vector representations of formulas. For now, we assume these vector representations are saved beforehand. 
 
 # References
 Please cite Tangent-CFT: An Embedding Model for Mathematical Formulas paper.
