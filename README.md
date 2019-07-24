@@ -3,17 +3,25 @@ Tangent Combined FastText (Tangent-CFT) is a embedding model for mathematical fo
 We introduce a new formula embedding model that we use with two hierarchical representations, (1) Symbol Layout Trees (SLTs) for appearance, and (2) Operator Trees (OPTs) for mathematical content. Following the approach of graph embeddings such as DeepWalk, we generate tuples representing paths between pairs of symbols depth-first, embed tuples using the fastText n-gram embedding model, and then represent an SLT or OPT by its average tuple embedding vector. We then combine SLT and OPT embeddings, leading to state-of-the-art results for the formula retrieval task of NTCIR-12.
 
 # Requirements
-The codebase is implemented in Python 3.6. Package versions used for development are in requirement.txt file.
+The codebase is implemented in Python 3.6. Package versions used for development are in [requirement.txt] (https://github.com/BehroozMansouri/TangentCFT/blob/master/requirements.txt) file.
 
-# Datasets
+# Dataset
 To evaluate our embedding model we used [NTCIR-12 dataset] (https://www.cs.rit.edu/~rlaz/NTCIR-12_MathIR_Wikipedia_Corpus.zip), focusing on formula retrieval task. The collection contains over 590000 mathematical formulas from Wikipedia with 20 formula queries with their relevant formulas. For comparison with previous approaches we used bpref score to evaluate the top-1000 relevant formulas. 
+
 # Getting Started
 Here are the steps to do the Tangent-CFT embeddings. It is assumed that, tuples for each formula are extracted beforehand using Tangent-S (see [paper](https://dl.acm.org/citation.cfm?id=3080748) and [code](https://www.cs.rit.edu/~dprl/files/release_tangent_S.zip) ) in a separate file, with each tuple located in a line. With that assumption, the following steps are needed before training the model:
 
-* **Generating the encoded values.** Using formula or tuple level encoder(located in Embedding Pre-processing directory), specify the directory where the formula tuples are at (-sd) and where to save the encoded values (-dd). Our current model assumes that you have saved all the encoded values before hand. Here is an example:
+* **Generating the encoded values.** Using formula or tuple level encoder(located in Embedding Pre-processing directory), specify the directory where the formula tuples are at (-sd) and where to save the encoded values (-dd). Parameter --frp take value True or False, with value True ignoring the full relative path. Finally, --tokenization decided how the tuples should be encoded. It should be an integer between 1 to 4, with value 3 as the default. Given a tuple in form of (V!v, N!12, a), tokenization in each of the four modes will create the following characters:
+* 1. v,12,a
+* 2. V!,N!,a
+* 3. V!,v,N!,12,a
+* 4. V!v,N!12,a
+
+
+Here is an example:
 
 ```
-python3 as sdaf dsa
+ python3 encoder_tuple_level.py -sd tuple_directory -dd encoded_tuple_directory 
 ```
 
 In this example 
