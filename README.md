@@ -38,7 +38,12 @@ result_vector_file_path,/home/opt_encoded_values/
 skip_gram,1
 vector_size,300
 ```
-* **Running Tangent-CFT.** At this stage, formulas and queries are encoded and saved in a directory. Configuration of the model is defined by the user. It is time to run Tangent-CFT to get embedding for formulas, queries and do the NTCIR-12 formula retrieval task. To run the model, one 
+* **Running Tangent-CFT.** At this stage, formulas and queries are encoded and saved in a directory. Configuration of the model is defined by the user. It is time to run Tangent-CFT to get embedding for formulas, queries and do the NTCIR-12 formula retrieval task. To run the model, one should specify all id of configuration file(s) which should be all located in the directory (Configuration/config). If users are intersted to save the vector representations of formulas for further analysis, they should set the *'sv'* parameter to True. Here is an example of running the model that runs the model with configurations 100 and 101 and saves the vector representations in the direcotry specified in the configuration file:
+```
+python3 runModule.py -cid 100 101 --sv True
+```
+
+
 * **Checking the retrieval results.** The 
 * **Combineing different models**
 
