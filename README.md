@@ -20,7 +20,7 @@ Here are the steps to do the Tangent-CFT embeddings. It is assumed that, tuples 
 Here is an example to run tuple-level encoder:
 
 ```
- python3 encoder_tuple_level.py -sd tuple_directory -dd encoded_tuple_directory --frp True --tokenization 3
+ python3 encoder_tuple_level.py -sd tuple_directory -dd encoded_tuple_directory --tokenization 2
 ```
 
 In this example 
