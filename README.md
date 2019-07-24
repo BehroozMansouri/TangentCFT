@@ -11,7 +11,9 @@ Here are the steps to do the Tangent-CFT embeddings. It is assumed that, tuples 
 
 * **Generating the encoded values.** Using formula or tuple level encoder(located in Embedding Pre-processing directory), specify the directory where the formula tuples are at (-sd) and where to save the encoded values (-dd). Our current model assumes that you have saved all the encoded values before hand. Here is an example:
 
-'python3 as sdaf dsa'
+'''
+python3 as sdaf dsa
+'''
 
 In this example 
 
