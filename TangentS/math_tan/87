@@ -1,0 +1,18 @@
+"<math xmlns="http://www.w3.org/1998/Math/MathML" display="block" alttext="{\displaystyle r=sin(2\phi )}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>r</mi>
+        <mo>=</mo>
+        <mi>s</mi>
+        <mi>i</mi>
+        <mi>n</mi>
+        <mo stretchy="false">(</mo>
+        <mn>2</mn>
+        <mi>&#x03D5;<!-- ϕ --></mi>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle r=sin(2\phi )}</annotation>
+  </semantics>
+</math>"
