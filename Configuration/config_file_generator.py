@@ -1,4 +1,4 @@
-from Configuration.configuration import configuration
+from Configuration.configuration import Configuration
 import numpy as np
 
 """
@@ -17,11 +17,13 @@ def id_lst(start, count):
 
 
 def main():
+    """
+    In the example below, we want to tune a parameter (max n-gram) with values between 1 to 9.
+    """
 
-    parameter_tuner = list_creator(1, 10, 1)
+    parameter_tuner = list_creator(1, 2, 1)
     config_map = {
                     "context_window_size": [20],
-                    "file_path_fasttext": ["/home/bm3302/FastText/o1_map/"],
                     "hs": [1],
                     "iter": [40],
                     "max": parameter_tuner,
@@ -32,18 +34,18 @@ def main():
                     "skip_gram": [1],
                     "vector_size": [150]
                   }
-
-    lst_id = id_lst(7065, len(parameter_tuner))
-    for id in lst_id:
-        cfg = configuration()
-        setattr(cfg, "id", id)
+    # deciding the file name of config files from 1 to 9
+    lst_id = id_lst(1, len(parameter_tuner))
+    for file_id in lst_id:
+        cfg = Configuration()
+        setattr(cfg, "id", file_id)
         for item in config_map:
             attribute = item
             value = config_map[item][0]
             if len(config_map[item]) > 1:
                 config_map[item].pop(0)
             setattr(cfg, attribute, value)
-        cfg.write_to_file("config/config_"+str(id))
+        cfg.write_to_file("config/config_"+str(file_id))
 
 
 if __name__ == '__main__':
