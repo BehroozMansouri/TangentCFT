@@ -2,37 +2,43 @@ from gensim.models import FastText
 import datetime
 
 
-class tangent_cft_model:
-    def __init__(self, config, fast_text_train_data):
-        self.FastTextInput = fast_text_train_data
-        self.config = config
+class TangentCftModel:
+    def __init__(self,):
         self.model = None
 
-    def train(self):
+    def train(self, config, fast_text_train_data):
         """
-            This method trains the fastText model based on the specified config file
-            After setting fastText hyper-parameters, it reads Wikipedia dataset and add the tuples converted char values to model words.
-            Suppose that a formula is consists of tuples ABC,DEF,GHI they are fed to fastText as {ABC,DEF,GHI}.
+        Takes in the fastText parameters and the train data and trains the FastText model
+        :param config: configuration for fastText model
+        :param fast_text_train_data: train data
+        :return:
         """
-        size = self.config.vector_size
-        window = int(self.config.context_window_size)
-        sg = int(self.config.skip_gram)
-        hs = int(self.config.hs)
-        negative = int(self.config.negative)
-        iteration = int(self.config.iter)
-        min_n = int(self.config.min)
-        max_n = int(self.config.max)
-        word_ngrams = int(self.config.ngram)
+        size = config.vector_size
+        window = int(config.context_window_size)
+        sg = int(config.skip_gram)
+        hs = int(config.hs)
+        negative = int(config.negative)
+        iteration = int(config.iter)
+        min_n = int(config.min)
+        max_n = int(config.max)
+        word_ngrams = int(config.ngram)
 
         train_start_time = datetime.datetime.now()
-
-        self.model = FastText(self.FastTextInput, size=size, window=window, sg=sg, hs=hs,
+        print("Training the model")
+        self.model = FastText(fast_text_train_data, size=size, window=window, sg=sg, hs=hs,
                               workers=1, negative=negative, iter=iteration, min_n=min_n,
                               max_n=max_n, word_ngrams=word_ngrams)
 
-        "return model train time"
         train_end_time = datetime.datetime.now()
+        "Returns the train time of the model"
         return train_end_time - train_start_time
 
-    def get_vector(self, math_concept):
-        return self.model.wv[math_concept]
+    def save_model(self, model_file_path):
+        file_name = (model_file_path+".wv.vectors.npy")
+        self.model.save(file_name)
+
+    def load_model(self, model_file_path):
+        self.model = FastText.load(model_file_path+".wv.vectors.npy")
+
+    def get_vector_representation(self, encoded_math_tuple):
+        return self.model.wv[encoded_math_tuple]

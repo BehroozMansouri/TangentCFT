@@ -1,0 +1,38 @@
+# -*- CPERL -*-
+# /=====================================================================\ #
+# |  mws.sty - Implementation for LaTeXML                               | #
+# |                                                                     | #
+# |=====================================================================| #
+# | NOT Part of LaTeXML:                                                | #
+# |  Public domain software, produced as part of work done by the       | #
+# |  United States Government & not subject to copyright in the US.     | #
+# |---------------------------------------------------------------------| #
+# | Deyan Ginev <d.ginev@jacobs-university.de>                          | #
+# | http://dlmf.nist.gov/LaTeXML/                                       | #
+# \=====================================================================/ #
+
+package LaTeXML::Package::Pool;
+use strict;
+use LaTeXML::Package;
+use LaTeXML::Post::MathML;
+
+#Experimental: MathWebSearch
+# We want \qvar{X} to represent a "query variable" X for the MathWebSearch query.
+DefConstructor('\qvar@construct Semiverbatim OptionalSemiverbatim','<ltx:XMTok name="qvar" meaning="qvar" color="red" ?#2(type="#2")>qvar_#1</ltx:XMTok>',requireMath=>1);
+
+# And for authoring simplicity, we use ?X as an alias to \qvar{X}
+AssignMathcode('?'=>0x8000, 'global');
+DefMacro('?','\qvar');
+DefMacro('\qvar Semiverbatim OptionalMatch::',sub{ 
+  my ($gullet,$var,$type_declaration) = @_;
+  # Allowing for an optional type argument:
+  my $type;
+  if (defined $type_declaration) {
+    $type = $gullet->readArg(); }
+  return Invocation(T_CS('\qvar@construct'),$var,$type); });
+
+package LaTeXML::Post::MathML;
+# Support for rewriting of qvar symbols during post-processing to MathML
+DefMathML('Token:?:qvar', undef, sub { ['m:csymbol', { cd => 'mws', name => 'qvar', type=>$_[0]->getAttribute('type') }, $_[0]->textContent]; });
+
+1;

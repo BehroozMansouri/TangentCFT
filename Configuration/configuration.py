@@ -1,4 +1,4 @@
-class configuration:
+class Configuration:
     def __init__(self, config_file_path=None):
         """
         Configuration for the n-gram embedding model, FastText.
@@ -6,7 +6,6 @@ class configuration:
         None, so that they can be set in the program manually.
         """
         self.context_window_size = None
-        self.file_path_fasttext = None # file path where the encoded values of tuples or formulas exist
         self.hs = None
         self.id = None
         self.iter = None

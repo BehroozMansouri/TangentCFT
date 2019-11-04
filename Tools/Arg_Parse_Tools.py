@@ -5,7 +5,7 @@ import argparse
 def required_length(min_value, max_value):
     class RequiredLength(argparse.Action):
         def __call__(self, parser, args, values, option_string=None):
-            if not min_value <= (values) <= max_value:
+            if not min_value <= values <= max_value:
                 msg = 'argument "{f}" requires between {min_value} and {max_value} arguments'.format(
                     f=self.dest, min_value=min_value, max_value=max_value)
                 raise argparse.ArgumentTypeError(msg)
@@ -15,7 +15,7 @@ def required_length(min_value, max_value):
 
 class readable_directory(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
-        prospective_dir=values
+        prospective_dir = values
         if not os.path.isdir(prospective_dir):
             raise argparse.ArgumentTypeError("readable_dir: {0} is not a valid path.".format(prospective_dir))
         if os.access(prospective_dir, os.R_OK):

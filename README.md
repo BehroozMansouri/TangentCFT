@@ -48,4 +48,4 @@ python3 runModule.py -cid 100 101 --sv True
 We provide different means of combining the vector representations of formulas. For now, we assume these vector representations are saved beforehand. 
 
 # References
-Please cite Tangent-CFT: An Embedding Model for Mathematical Formulas paper.
+Please cite Tangent-CFT: An Embedding Model for Mathematical Formulas paper. (Mansouri, B., Rohatgi, S., Oard, D. W., Wu, J., Giles, C. L., & Zanibbi, R. (2019, September). Tangent-CFT: An Embedding Model for Mathematical Formulas. In Proceedings of the 2019 ACM SIGIR International Conference on Theory of Information Retrieval (pp. 11-18). ACM.)
