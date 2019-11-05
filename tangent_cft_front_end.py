@@ -19,7 +19,7 @@ def main():
     parser.add_argument('-cid', metavar='cid', type=int, help='Configuration file.', required=True)
     parser.add_argument('--wiki', type=bool, help="Determines if the dataset is wiki or not.", default=True)
     parser.add_argument('--slt', type=bool, help="Determines to use slt (True) or opt(False)", default=True)
-    parser.add_argument('-em', type=str, help="File path for encoder map.")
+    parser.add_argument('-em', type=str, help="File path for encoder map.", required=True)
     parser.add_argument('--mp', type=str, help="Model file path.", default=None)
     parser.add_argument('--qd', type=str, help="NTCIR12 query directory.", default=None)
     parser.add_argument('--rf', type=str, help="Retrieval result file path.", default="ret_res")

@@ -24,9 +24,10 @@ class TangentCFTBackEnd:
         dictionary_formula_slt_tuple = self.data_reader.get_collection()
         print("encoding train data...")
         for formula in dictionary_formula_slt_tuple:
-            dictionary_lst_encoded_tuples[formula] = (self.__encode_lst_tuples(dictionary_formula_slt_tuple[formula]),
-                                                      embedding_type, ignore_full_relative_path, tokenize_all,
-                                                      tokenize_number)
+            dictionary_lst_encoded_tuples[formula] = self.__encode_lst_tuples(dictionary_formula_slt_tuple[formula],
+                                                                              embedding_type, ignore_full_relative_path,
+                                                                              tokenize_all,
+                                                                              tokenize_number)
         return dictionary_lst_encoded_tuples
 
     def __encode_lst_tuples(self, list_of_tuples, embedding_type, ignore_full_relative_path, tokenize_all,
