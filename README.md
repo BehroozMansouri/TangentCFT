@@ -7,45 +7,40 @@ The codebase is implemented in Python 3.6. Package versions used for development
 
 # Dataset
 To evaluate our embedding model we used [NTCIR-12 dataset](https://www.cs.rit.edu/~rlaz/NTCIR-12_MathIR_Wikipedia_Corpus.zip), focusing on formula retrieval task. The collection contains over 590000 mathematical formulas from Wikipedia with 20 formula queries with their relevant formulas. For comparison with previous approaches we used bpref score to evaluate the top-1000 relevant formulas. 
+Also one can easily use anydataset, such as [Math Stach Exchange] (https://math.stackexchange.com/), in form of csv file of latex formula and formula ids (separated by $$ sign) to train a new model. 
 
 # Running TangentCFT
-Here are the steps to do the Tangent-CFT embeddings. It is assumed that, tuples for each formula are extracted beforehand using Tangent-S (see [paper](https://dl.acm.org/citation.cfm?id=3080748) and [code](https://www.cs.rit.edu/~dprl/files/release_tangent_S.zip) ) in a separate file, with each tuple located in a line. With that assumption, the following steps are needed before training the model:
-
-* **Generating the encoded values.** Using formula or tuple level encoder(located in Embedding Pre-processing directory), specify the directory where the formula tuples are at (-sd) and where to save the encoded values (-dd). Parameter --frp take value True or False, with value True ignoring the full relative path. Finally, --tokenization decided how the tuples should be encoded. It should be an integer between 1 to 4, with value 3 as the default. Given a tuple in form of (V!v, N!12, a), tokenization in each of the four modes will create the following characters:
- 1. v,12,a
- 2. V!,N!,a
- 3. V!,v,N!,12,a
- 4. V!v,N!12,a
-
-Here is an example to run tuple-level encoder:
-
+Here are the steps to do the Tangent-CFT embeddings. 
+The first step to run TangentCFT is to set the configuration file which are the parameters for fastText. Also, one can specify the directory to save the output vector for each of the formulas for further analysis. The configuration file should be in Configuration directory, under the config directory with file name in format of config_x where x show the run id. Here is an example of configuration file:
 ```
- python3 encoder_tuple_level.py -sd tuple_directory -dd encoded_tuple_directory --tokenization 2
-```
-
-* **Setting configuration of model.** The next step is to set the configuration of the model. The parameters for fastText and the file path to read the encoded tuples should be specified before training. Also, one can specify the directory to save the output vector for each of the formulas for further analysis. The configuration file should be in Configuration directory, under the config directory with file name in format of config_x where x show the run id. Here is an example of configuration file:
-```
-context_window_size,5
-file_path_fasttext,/home/opt_tuple_directory/
-hs,0
-id,100
-iter,10
+context_window_size,20
+hs,1
+id,1
+iter,1
 max,6
 min,3
-negative,20
+negative,30
 ngram,1
-result_vector_file_path,/home/opt_encoded_values/
+result_vector_file_path,None
 skip_gram,1
 vector_size,300
-```
-* **Running Tangent-CFT.** At this stage, formulas and queries are encoded and saved in a directory. Configuration of the model is defined by the user. It is time to run Tangent-CFT to get embedding for formulas, queries and do the NTCIR-12 formula retrieval task. To run the model, one should specify all id of configuration file(s) which should be all located in the directory (Configuration/config). If users are intersted to save the vector representations of formulas for further analysis, they should set the *'sv'* parameter to True. Here is an example of running the model that runs the model with configurations 100 and 101 and saves the vector representations in the direcotry specified in the configuration file:
-```
-python3 runModule.py -cid 100 101 --sv True
-```
-* **Checking the retrieval results.** After the model is trained and the retrieval is done, the results are saved the directory "Retrieval_Results" in format of res_id where id is the configuration id. In each line of the result file, there is the query id followed by relevant formula id, its rank, the similarity score and run id. TangentCFT results on NTCIR-12 dataset is Retrieval_Results directory as the sample. To evaluate the results, the judge file of NTCIR-12 task, is located in the Evaluation directory with [Trec_eval tool](https://trec.nist.gov/trec_eval/). 
 
-* **Combineing different models.** After training different models using Symbol layout trees (SLTs) or Operator trees (OPTs), one may be intersted in combining the results. So for a given formula, there can be different vector representations based on SLTs or OPTs or different configuration. 
-We provide different means of combining the vector representations of formulas. For now, we assume these vector representations are saved beforehand. 
+```
+The next step is to decide to train a new model or load a previously trained model that is saved in Saved_model directory. To train a new model, one can simply set directory of NTCIR-12 (or other dataset) and configuration file id. Here is an example of running the model that runs the model with configurations 100 and 101 and saves the vector representations in the direcotry specified in the configuration file:
+```
+python3 tangent_cft_front_end.py -cid 1 -ds '/NTCIR-12/MathTagArticles' --slt True -em 'encoder.csv'
+```
+The command above, use the configuration file, with id 1, use the NTCIR 12 dataset to train the model based on slt representation and saves the encoding map in encoder.csv file. To save the model one can use the command:
+```
+python3 tangent_cft_front_end.py -cid 2 -ds '/NTCIR-12/MathTagArticles' --slt False -em 'encoder.csv' --mp 'opt_model' 
+```
+With this command, a model is trained based on OPT representation of NTCIR-12 dataset and result is saved in opt_model. Finally, to load a model, one can use the following command:
+```
+python3 tangent_cft_front_end.py -cid 2 -ds '/NTCIR-12/MathTagArticles' --slt False -em 'encoder.csv' --mp 'opt_model' --t False --rf res_1
+```
+With this command, train model is set to false and model is loaded and retrieval result is saved in res_1 file in Retrieval_Results directory.
+
+* **Checking the retrieval results.** After the model is trained and the retrieval is done, the results are saved the directory "Retrieval_Results". In each line of the result file, there is the query id followed by relevant formula id, its rank, the similarity score and run id. TangentCFT results on NTCIR-12 dataset is Retrieval_Results directory as the sample. To evaluate the results, the judge file of NTCIR-12 task, is located in the Evaluation directory with [Trec_eval tool](https://trec.nist.gov/trec_eval/). 
 
 # References
 Please cite Tangent-CFT: An Embedding Model for Mathematical Formulas paper. (Mansouri, B., Rohatgi, S., Oard, D. W., Wu, J., Giles, C. L., & Zanibbi, R. (2019, September). Tangent-CFT: An Embedding Model for Mathematical Formulas. In Proceedings of the 2019 ACM SIGIR International Conference on Theory of Information Retrieval (pp. 11-18). ACM.)
