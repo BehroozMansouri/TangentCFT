@@ -1,19 +1,18 @@
-import datetime
+import logging
 import os
 import numpy
-from Configuration.configuration import configuration
-from tangent_cft_model import tangent_cft_model
+from Configuration.configuration import Configuration
+from tangent_cft_model import TangentCftModel
 from torch.autograd import Variable
 import torch
 import torch.nn.functional as F
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 use_cuda = torch.cuda.is_available()
-number_of_queries = 20
 
 
-class tangent_cft_module:
-    def __init__(self, config_file_path):
+class TangentCFTModule:
+    def __init__(self, model_file_path=None):
         """
             Take the configuration file path, this file define where the tangent_fasttext formulas are (those
             tangent-tuple encoded as char to be fed to fasttext). Both queries and collection dataset are in the same
@@ -21,118 +20,70 @@ class tangent_cft_module:
             be saved is defined in this file.
             Finally this file has the hyper_parameter setting for fasttext.
         """
+        self.model = TangentCftModel()
+        if model_file_path is not None:
+            print("Loading the model")
+            self.model.load_model(model_file_path)
+
+    def train_model(self, configuration, lst_lst_encoded_tuples):
         print("Setting Configuration")
-        self.configuration = configuration(config_file_path)
+        self.model.train(configuration, lst_lst_encoded_tuples)
+        return self.model
 
-        print("Reading train data")
-        self.fast_text_train_data, self.collection_formula_map = self.read_training_data()
-        self.query_formula_map = self.read_query_data()
-        self.model = tangent_cft_model(self.configuration, self.fast_text_train_data)
+    def save_model(self, model_file_path):
+        self.model.save_model(model_file_path)
 
-    def run(self, run_id, save_vectors):
-        """
-            This is the main method that run the whole program, first the fasttext model is trained then the vectors for
-            wikipedia formulas are saved, then the vectors for each of the queries are saved and another program will use
-            these values.
-        """
-        print("Model is training.")
-        train_time = self.model.train()
-        print("train time\t" + str(train_time))
-
-        print("Vectors are being created.")
-        self.create_result_directories(save_vectors)
-        doc_id_map, doc_tensors = self.get_collection_formula_vector(save_vectors)
-        query_vector_map = self.save_query_formulas_vectors(save_vectors)
-
-        self.formula_retrieval(doc_id_map, doc_tensors, query_vector_map, run_id)
-
-    def formula_retrieval(self, doc_id_map, doc_tensors, query_vector_map, run_id):
-        time_summation = .0
-        counter = 0
-        f = open("Retrieval_Results/res_" + str(self.configuration.id), 'w')
-        for queryId in query_vector_map:
-            query_vec = query_vector_map[queryId]
-            t1 = datetime.datetime.now()
-            dist = F.cosine_similarity(doc_tensors, query_vec)
-            index_sorted = torch.sort(dist, descending=True)[1]
-            top_1000 = index_sorted[:1000]
-            t2 = datetime.datetime.now()
-            top_1000 = top_1000.data.cpu().numpy()
-            time_summation += (t2 - t1).total_seconds() * 1000.0
-            counter += 1
-            cos_values = torch.sort(dist, descending=True)[0][:1000].data.cpu().numpy()
-            count = 1
-            query = "NTCIR12-MathWiki-" + str(queryId)
-            line = query + " xxx "
-            for x in top_1000:
-                doc_id = doc_id_map[x]
-                score = cos_values[count - 1]
-                temp = line + doc_id + " " + str(count) + " " + str(score) + " Run_" + str(run_id)
-                f.write(temp + "\n")
-                count += 1
-        f.close()
-        print("Average retrieval time:")
-        print(time_summation / counter)
-
-    def get_collection_formula_vector(self, save_vectors):
-        """
-            This method for through each of the 17 Wikipedia directories, go through them file by file.
-            Each file is a formula in Wikipedia dataset and for each of them we are creating a vector representation.
-            To do so, for each of the SLT tuple in the formula we get its vector and the vector for formula is the average
-            of its tuples vectors. This vector is saved in a file.
-        """
-        result = {}
+    def index_collection(self, dictionary_formula_lst_encoded_tuples):
         numpy_lst = []
+        index_formula_id = {}
         idx = 0
-        for formula_id in self.collection_formula_map:
-            try:
-                formula_vector = numpy.array(self.get_vector_representation(self.collection_formula_map[formula_id])).reshape(1, self.configuration.vector_size)
-                numpy_lst.append(formula_vector)
-                result[idx] = formula_id
-                idx += 1
-            except:
-                pass
-
-            if save_vectors:
-                numpy.savetxt(self.configuration.result_vector_file_path + "/" + str(formula_id),
-                              formula_vector, newline=" ")
-
+        for formula in dictionary_formula_lst_encoded_tuples:
+            numpy_lst.append(self.__get_vector_representation(dictionary_formula_lst_encoded_tuples[formula]))
+            index_formula_id[idx] = formula
         temp = numpy.concatenate(numpy_lst, axis=0)
         tensor_values = Variable(torch.tensor(temp).double()).cuda()
-        return result, tensor_values
+        return tensor_values, index_formula_id
 
-    def save_query_formulas_vectors(self, save_vectors):
+    def get_query_vector(self, lst_encoded_tuples):
+        return self.__get_vector_representation(lst_encoded_tuples)
+
+    @staticmethod
+    def formula_retrieval(collection_tensor, formula_index, query_vector):
+        query_vec = torch.from_numpy(query_vector)
+        dist = F.cosine_similarity(collection_tensor, query_vec)
+        index_sorted = torch.sort(dist, descending=True)[1]
+        top_1000 = index_sorted[:1000]
+        top_1000 = top_1000.data.cpu().numpy()
+        cos_values = torch.sort(dist, descending=True)[0][:1000].data.cpu().numpy()
+        result = {}
+        count = 1
+        for x in top_1000:
+            doc_id = formula_index[x]
+            score = cos_values[count - 1]
+            result[doc_id] = score
+            count += 1
+        return result
+
+    def __get_vector_representation(self, lst_encoded_tuples):
         """
-        This method saves the vector representation of formula queries.
-        We have 40 queries in the dataset of which the second 20 are wildcard queries.
+         This method take the converted-tuple formula file path (the file on which a list the converted tuples for
+         formula is saved, then it get vector representation of each of the tuple. The formula vector is the average of its
+         tuples vectors.
+        :param lst_encoded_tuples: averaging vector representation for these tuples
+        :return: vector representation for the formula
         """
-        query_vectors = {}
-        for i in range(1, number_of_queries + 1):
-            query_vector = numpy.array(self.get_vector_representation(self.query_formula_map[i])).reshape(1, self.configuration.vector_size)
-            query_vectors[i] = Variable(torch.tensor(query_vector).double()).cuda()
-
-            if save_vectors:
-                numpy.savetxt(self.configuration.result_vector_file_path + "/Queries/" + str(i) + ".txt", query_vector,
-                              newline=" ")
-        return query_vectors
-
-    def create_result_directories(self, save_vectors):
-        """
-            This method create the directories that results will be saved on
-        """
-        if not save_vectors:
-            return
-
-        os.makedirs(self.configuration.result_vector_file_path)
-        for i in range(1, 17):
-            os.makedirs(self.configuration.result_vector_file_path + "/" + str(i))
-        os.makedirs(self.configuration.result_vector_file_path + "/" + "Queries")
-
-    def read_training_data(self):
-        pass
-
-    def read_query_data(self):
-        pass
-
-    def get_vector_representation(self, formula_fast_text_representation):
-        pass
+        temp_vector = None
+        first = True
+        counter = 0
+        for encoded_tuple in lst_encoded_tuples:
+            # if the tuple vector cannot be extracted due to unseen n-gram, then we pass over that tuple.
+            try:
+                if first:
+                    temp_vector = self.model.get_vector_representation(encoded_tuple)
+                    first = False
+                else:
+                    temp_vector = temp_vector + self.model.get_vector_representation(encoded_tuple)
+                counter = counter + 1
+            except Exception as e:
+                logging.exception(e)
+        return (temp_vector / counter).reshape(1, self.vector_size)
