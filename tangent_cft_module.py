@@ -50,7 +50,7 @@ class TangentCFTModule:
 
     @staticmethod
     def formula_retrieval(collection_tensor, formula_index, query_vector):
-        query_vec = torch.from_numpy(query_vector)
+        query_vec = torch.from_numpy(query_vector).cuda()
         dist = F.cosine_similarity(collection_tensor, query_vec)
         index_sorted = torch.sort(dist, descending=True)[1]
         top_1000 = index_sorted[:1000]
@@ -59,6 +59,8 @@ class TangentCFTModule:
         result = {}
         count = 1
         for x in top_1000:
+            if x not in formula_index:
+                continue
             doc_id = formula_index[x]
             score = cos_values[count - 1]
             result[doc_id] = score
