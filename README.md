@@ -6,7 +6,7 @@ We introduce a new formula embedding model that we use with two hierarchical rep
 The codebase is implemented in Python 3.6. Package versions used for development are in [requirement.txt](https://github.com/BehroozMansouri/TangentCFT/blob/master/requirements.txt) file.
 
 # Dataset
-To evaluate our embedding model we used [NTCIR-12 dataset](https://www.cs.rit.edu/~rlaz/NTCIR-12_MathIR_Wikipedia_Corpus.zip), focusing on formula retrieval task. The collection contains over 590000 mathematical formulas from Wikipedia with 20 formula queries with their relevant formulas. For comparison with previous approaches we used bpref score to evaluate the top-1000 relevant formulas.
+To evaluate our embedding model we used [NTCIR-12 dataset](https://www.cs.rit.edu/~rlaz/NTCIR-12_MathIR_Wikipedia_Corpus.zip) (See TestQueries directory for example topics), focusing on formula retrieval task. The collection contains over 590000 mathematical formulas from Wikipedia with 20 formula queries with their relevant formulas. For comparison with previous approaches we used bpref score to evaluate the top-1000 relevant formulas.
 
 After downloading NTCIR-12 dataset, extract all tarballs under the sub-directories. Example shell command:
 ```sh
