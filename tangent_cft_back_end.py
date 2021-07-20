@@ -77,7 +77,7 @@ class TangentCFTBackEnd:
                    tokenize_number=True
                    ):
         self.module = TangentCFTModule(self.config, model_file_path)
-        self.__load_encoder_map(map_file_path)
+        self.__load_encoder_map("Saved_model/" + map_file_path)
         dictionary_formula_tuples_collection = self.__encode_train_tuples(embedding_type, ignore_full_relative_path,
                                                                           tokenize_all, tokenize_number)
         self.__save_encoder_map(map_file_path)
