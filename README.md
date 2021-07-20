@@ -42,7 +42,7 @@ python3 tangent_cft_front_end.py -cid 2 -ds '/NTCIR-12/MathTagArticles' --slt Fa
 ```
 With this command, a model is trained based on OPT representation of NTCIR-12 dataset and result is saved in opt_model. Finally, to load a model, one can use the following command:
 ```
-python3 tangent_cft_front_end.py -cid 2 -ds '/NTCIR-12/MathTagArticles' --slt False -em 'encoder.csv' --mp 'opt_model' --t False --rf res_1
+python3 tangent_cft_front_end.py -cid 2 -ds '/NTCIR-12/MathTagArticles' --slt False -em 'encoder.csv' --mp 'opt_model' --t False --qd TestQueries/ --rf res_1
 ```
 With this command, train model is set to false and model is loaded and retrieval result is saved in res_1 file in Retrieval_Results directory.
 
