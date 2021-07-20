@@ -53,7 +53,7 @@ def main():
     tokenize_number = args['tn']
     queries_directory_path = args['qd']
     embedding_type = TupleTokenizationMode(args['et'])
-    map_file_path = "Saved_model/Embedding_Preprocessing/" + str(encoder_file_path)
+    map_file_path = "Embedding_Preprocessing/" + str(encoder_file_path)
     config_file_path = "Configuration/config/config_" + str(config_id)
 
     system = TangentCFTBackEnd(config_file=config_file_path, path_data_set=dataset_file_path, is_wiki=is_wiki,

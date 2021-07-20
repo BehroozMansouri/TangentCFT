@@ -12,7 +12,7 @@ use_cuda = torch.cuda.is_available()
 
 
 class TangentCFTModule:
-    def __init__(self, model_file_path=None):
+    def __init__(self, config, model_file_path=None):
         """
             Take the configuration file path, this file define where the tangent_fasttext formulas are (those
             tangent-tuple encoded as char to be fed to fasttext). Both queries and collection dataset are in the same
@@ -20,6 +20,7 @@ class TangentCFTModule:
             be saved is defined in this file.
             Finally this file has the hyper_parameter setting for fasttext.
         """
+        self.config = config
         self.model = TangentCftModel()
         if model_file_path is not None:
             print("Loading the model")
@@ -86,4 +87,5 @@ class TangentCFTModule:
                 counter = counter + 1
             except Exception as e:
                 logging.exception(e)
-        return (temp_vector / counter).reshape(1, self.vector_size)
+
+        return (temp_vector / counter).reshape(1, self.config.vector_size)

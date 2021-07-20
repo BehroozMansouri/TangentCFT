@@ -60,7 +60,7 @@ class TangentCFTBackEnd:
                     embedding_type=TupleTokenizationMode.Both_Separated, ignore_full_relative_path=True,
                     tokenize_all=False,
                     tokenize_number=True):
-        self.module = TangentCFTModule()
+        self.module = TangentCFTModule(self.config)
         dictionary_formula_tuples_collection = self.__encode_train_tuples(embedding_type, ignore_full_relative_path,
                                                                           tokenize_all, tokenize_number)
         print("training the fast text model...")
@@ -76,7 +76,7 @@ class TangentCFTBackEnd:
                    tokenize_all=False,
                    tokenize_number=True
                    ):
-        self.module = TangentCFTModule(model_file_path)
+        self.module = TangentCFTModule(self.config, model_file_path)
         self.__load_encoder_map(map_file_path)
         dictionary_formula_tuples_collection = self.__encode_train_tuples(embedding_type, ignore_full_relative_path,
                                                                           tokenize_all, tokenize_number)
