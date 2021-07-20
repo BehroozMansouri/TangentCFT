@@ -34,7 +34,7 @@ vector_size,300
 ```
 The next step is to decide to train a new model or load a previously trained model that is saved in Saved_model directory. To train a new model, one can simply set directory of NTCIR-12 (or other dataset) and configuration file id. Here is an example of running the model that runs the model with configurations 100 and 101 and saves the vector representations in the direcotry specified in the configuration file:
 ```
-python3 tangent_cft_front_end.py -cid 1 -ds '/NTCIR-12/MathTagArticles' --slt True -em 'encoder.csv'
+python3 tangent_cft_front_end.py -cid 1 -ds '/NTCIR-12/MathTagArticles' --slt True -em 'encoder.csv' --mp 'slt_model'
 ```
 The command above, use the configuration file, with id 1, use the NTCIR 12 dataset to train the model based on slt representation and saves the encoding map in encoder.csv file. To save the model one can use the command:
 ```
