@@ -39,8 +39,11 @@ class TangentCFTModule:
         index_formula_id = {}
         idx = 0
         for formula in dictionary_formula_lst_encoded_tuples:
-            numpy_lst.append(self.__get_vector_representation(dictionary_formula_lst_encoded_tuples[formula]))
+            encoded_tuples = dictionary_formula_lst_encoded_tuples[formula]
+            vector = self.__get_vector_representation(encoded_tuples)
+            numpy_lst.append(vector)
             index_formula_id[idx] = formula
+            idx += 1
         temp = numpy.concatenate(numpy_lst, axis=0)
         tensor_values = Variable(torch.tensor(temp).double()).cuda()
         return tensor_values, index_formula_id
@@ -57,12 +60,10 @@ class TangentCFTModule:
         top_1000 = top_1000.data.cpu().numpy()
         cos_values = torch.sort(dist, descending=True)[0][:1000].data.cpu().numpy()
         result = {}
-        count = 1
+        count = 0
         for x in top_1000:
-            if x not in formula_index:
-                continue
             doc_id = formula_index[x]
-            score = cos_values[count - 1]
+            score = cos_values[count]
             result[doc_id] = score
             count += 1
         return result
@@ -88,6 +89,6 @@ class TangentCFTModule:
                     temp_vector = temp_vector + self.model.get_vector_representation(encoded_tuple)
                 counter = counter + 1
             except Exception as e:
-                logging.exception(e)
+                pass
 
         return (temp_vector / counter).reshape(1, self.config.vector_size)
