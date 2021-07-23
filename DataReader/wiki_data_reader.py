@@ -23,7 +23,8 @@ class WikiDataReader(AbstractDataReader, ABC):
             temp_address = root+"/"+directory+"/"
             if not os.path.isdir(temp_address):
                 continue
-            temp_address = temp_address +"/Articles"
+            if os.path.exists(temp_address + "/Articles"):
+                temp_address = temp_address + "/Articles"
             for filename in os.listdir(temp_address):
                 file_path = temp_address + '/' + filename
                 parts = filename.split('/')
@@ -38,9 +39,10 @@ class WikiDataReader(AbstractDataReader, ABC):
                     for key in formulas:
                         tuples = formulas[key].get_pairs(window=2, eob=True)
                         dictionary_formula_tuples[file_name + ":" + str(key)] = tuples
-                except:
+                except Exception as e:
                     except_count += 1
-                    print(file_name)
+                    print('Reader Exception:', e)
+                    print(file_path)
         return dictionary_formula_tuples
 
     def get_query(self,):

@@ -12,7 +12,7 @@ use_cuda = torch.cuda.is_available()
 
 
 class TangentCFTModule:
-    def __init__(self, model_file_path=None):
+    def __init__(self, config, model_file_path=None):
         """
             Take the configuration file path, this file define where the tangent_fasttext formulas are (those
             tangent-tuple encoded as char to be fed to fasttext). Both queries and collection dataset are in the same
@@ -20,6 +20,7 @@ class TangentCFTModule:
             be saved is defined in this file.
             Finally this file has the hyper_parameter setting for fasttext.
         """
+        self.config = config
         self.model = TangentCftModel()
         if model_file_path is not None:
             print("Loading the model")
@@ -38,8 +39,12 @@ class TangentCFTModule:
         index_formula_id = {}
         idx = 0
         for formula in dictionary_formula_lst_encoded_tuples:
-            numpy_lst.append(self.__get_vector_representation(dictionary_formula_lst_encoded_tuples[formula]))
-            index_formula_id[idx] = formula
+            encoded_tuples = dictionary_formula_lst_encoded_tuples[formula]
+            if len(encoded_tuples) > 0:
+                vector = self.__get_vector_representation(encoded_tuples)
+                numpy_lst.append(vector)
+                index_formula_id[idx] = formula
+                idx += 1
         temp = numpy.concatenate(numpy_lst, axis=0)
         tensor_values = Variable(torch.tensor(temp).double()).cuda()
         return tensor_values, index_formula_id
@@ -49,17 +54,17 @@ class TangentCFTModule:
 
     @staticmethod
     def formula_retrieval(collection_tensor, formula_index, query_vector):
-        query_vec = torch.from_numpy(query_vector)
+        query_vec = torch.from_numpy(query_vector).cuda()
         dist = F.cosine_similarity(collection_tensor, query_vec)
         index_sorted = torch.sort(dist, descending=True)[1]
         top_1000 = index_sorted[:1000]
         top_1000 = top_1000.data.cpu().numpy()
         cos_values = torch.sort(dist, descending=True)[0][:1000].data.cpu().numpy()
         result = {}
-        count = 1
+        count = 0
         for x in top_1000:
             doc_id = formula_index[x]
-            score = cos_values[count - 1]
+            score = cos_values[count]
             result[doc_id] = score
             count += 1
         return result
@@ -85,5 +90,6 @@ class TangentCFTModule:
                     temp_vector = temp_vector + self.model.get_vector_representation(encoded_tuple)
                 counter = counter + 1
             except Exception as e:
-                logging.exception(e)
-        return (temp_vector / counter).reshape(1, self.vector_size)
+                pass
+
+        return (temp_vector / counter).reshape(1, self.config.vector_size)
