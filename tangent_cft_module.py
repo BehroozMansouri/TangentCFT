@@ -33,23 +33,50 @@ class TangentCFTModule:
     def save_model(self, model_file_path):
         self.model.save_model(model_file_path)
 
-    def index_collection(self, dictionary_formula_lst_encoded_tuples):
+    def index_collection_to_tensors(self, dictionary_formula_lst_encoded_tuples):
+        """
+        Get dictionary of formula ids and their list of tuples and return matrix of tensors and a
+        dictionary having formula id and their corresponding row id in the matrix
+        """
         numpy_lst = []
         index_formula_id = {}
         idx = 0
         for formula in dictionary_formula_lst_encoded_tuples:
-            numpy_lst.append(self.__get_vector_representation(dictionary_formula_lst_encoded_tuples[formula]))
+            xx = self.__get_vector_representation(dictionary_formula_lst_encoded_tuples[formula])
+            xx = xx.reshape(1, 300)
+            numpy_lst.append(xx)
             index_formula_id[idx] = formula
+            idx += 1
         temp = numpy.concatenate(numpy_lst, axis=0)
         tensor_values = Variable(torch.tensor(temp).double()).cuda()
         return tensor_values, index_formula_id
+
+    def index_collection_to_numpy(self, dictionary_formula_lst_encoded_tuples):
+        """
+        This methods takes in the dictionary of formula id and their corresponding list of tuples and returns a dictionary
+        of formula id and their numpy vector representations
+        """
+        index_formula_id = {}
+        for formula in dictionary_formula_lst_encoded_tuples:
+            vector = self.__get_vector_representation(dictionary_formula_lst_encoded_tuples[formula])
+            vector = vector.reshape(1, 300)
+            index_formula_id[formula] = vector
+        return index_formula_id
 
     def get_query_vector(self, lst_encoded_tuples):
         return self.__get_vector_representation(lst_encoded_tuples)
 
     @staticmethod
     def formula_retrieval(collection_tensor, formula_index, query_vector):
-        query_vec = torch.from_numpy(query_vector)
+        """
+        Parameters:
+            collection_tensor: matric of tensor, each row vector representation of formula in the collection
+            formula_index: dictionary mapping each row of tensor matrix to a formula id
+            query_vector: formula query vector representation in numpy
+        """
+        query_vector = query_vector.reshape(1, 300)
+        query_vec = Variable(torch.tensor(query_vector).double()).cuda()
+        # input("wait here")
         dist = F.cosine_similarity(collection_tensor, query_vec)
         index_sorted = torch.sort(dist, descending=True)[1]
         top_1000 = index_sorted[:1000]
@@ -86,4 +113,4 @@ class TangentCFTModule:
                 counter = counter + 1
             except Exception as e:
                 logging.exception(e)
-        return (temp_vector / counter).reshape(1, self.vector_size)
+        return (temp_vector / counter)
