@@ -28,14 +28,15 @@ def main():
     parser.add_argument('--ta', type=bool, help="Determines to tokenize all", default=False)
     parser.add_argument('--tn', type=bool, help="Determines to tokenize numbers", default=True)
     parser.add_argument('--et', help='Embedding type; 1:Value, 2:Type, 3:Type and Value separated and'
-                                     ' 4: Type and Value Not Separated, 2 for formula level', choices=range(1, 5),
+                                     ' 4: Type and Value Not Separated', choices=range(1, 5),
                         default=3, type=int)
 
     args = vars(parser.parse_args())
 
-    train_model = (args['t'])
-    do_retrieval = (args['r'])
-    dataset_file_path = args['ds']
+    train_model = args['t']
+    do_retrieval = args['r']
+    dataset_file_path = "/home/bm3302/Downloads/NTCIR12_MathIR_WikiCorpus_v2.1.0/" \
+                        "MathTagArticles"#args['ds']
     config_id = args['cid']
     is_wiki = args['wiki']
     read_slt = args['slt']
@@ -62,7 +63,10 @@ def main():
             tokenize_number=tokenize_number
         )
         if do_retrieval:
-            retrieval_result = system.retrieval(dictionary_formula_tuples_collection)
+            retrieval_result = system.retrieval(dictionary_formula_tuples_collection,
+                                                embedding_type, ignore_full_relative_path, tokenize_all,
+                                                tokenize_number
+                                                )
             system.create_result_file(retrieval_result, "Retrieval_Results/" + res_file, run_id)
     else:
 
@@ -74,7 +78,10 @@ def main():
             tokenize_number=tokenize_number
         )
         if do_retrieval:
-            retrieval_result = system.retrieval(dictionary_formula_tuples_collection)
+            retrieval_result = system.retrieval(dictionary_formula_tuples_collection,
+                                                embedding_type, ignore_full_relative_path, tokenize_all,
+                                                tokenize_number
+                                                )
             system.create_result_file(retrieval_result, "Retrieval_Results/" + res_file, run_id)
 
 
