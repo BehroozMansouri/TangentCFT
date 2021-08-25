@@ -14,16 +14,20 @@ class WikiDataReader(AbstractDataReader, ABC):
         self.queries_directory_path = queries_directory_path
         super()
 
-
     def get_collection(self, ):
+        """
+        This method read the NTCIR-12 formulae in the collection.
+        To handle formulae with special characters line 39 normalizes the unicode data.
+        The return value is a dictionary of formula id (as key) and list of tuples (as value)
+        """
         except_count = 0
         dictionary_formula_tuples = {}
         root = self.collection_file_path
         for directory in os.listdir(root):
-            temp_address = root+"/"+directory+"/"
+            temp_address = root + "/" + directory + "/"
             if not os.path.isdir(temp_address):
                 continue
-            temp_address = temp_address +"/Articles"
+            temp_address = temp_address + "/Articles"
             for filename in os.listdir(temp_address):
                 file_path = temp_address + '/' + filename
                 parts = filename.split('/')
@@ -43,7 +47,12 @@ class WikiDataReader(AbstractDataReader, ABC):
                     print(file_name)
         return dictionary_formula_tuples
 
-    def get_query(self,):
+    def get_query(self, ):
+        """
+        This method reads the NTCIR-12 the queries.
+        Note that the Tangent-CFT does not support queries with Wildcard,
+        Therefore the query range is 1 to 20 which are concerete queries in NTCIR-12.
+        """
         except_count = 0
         dictionary_query_tuples = {}
         for j in range(1, 21):
