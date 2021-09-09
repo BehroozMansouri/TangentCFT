@@ -35,8 +35,7 @@ def main():
 
     train_model = args['t']
     do_retrieval = args['r']
-    dataset_file_path = "/home/bm3302/Downloads/NTCIR12_MathIR_WikiCorpus_v2.1.0/" \
-                        "MathTagArticles"#args['ds']
+    dataset_file_path = args['ds']
     config_id = args['cid']
     is_wiki = args['wiki']
     read_slt = args['slt']
