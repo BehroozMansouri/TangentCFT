@@ -42,11 +42,14 @@ class TangentCFTModule:
         index_formula_id = {}
         idx = 0
         for formula in dictionary_formula_lst_encoded_tuples:
-            xx = self.__get_vector_representation(dictionary_formula_lst_encoded_tuples[formula])
-            xx = xx.reshape(1, 300)
-            numpy_lst.append(xx)
-            index_formula_id[idx] = formula
-            idx += 1
+            try:
+                xx = self.__get_vector_representation(dictionary_formula_lst_encoded_tuples[formula])
+                xx = xx.reshape(1, 300)
+                numpy_lst.append(xx)
+                index_formula_id[idx] = formula
+                idx += 1
+            except:
+                continue
         temp = numpy.concatenate(numpy_lst, axis=0)
         tensor_values = Variable(torch.tensor(temp).double()).cuda()
         return tensor_values, index_formula_id
