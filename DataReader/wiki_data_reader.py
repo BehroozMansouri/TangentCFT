@@ -27,9 +27,9 @@ class WikiDataReader(AbstractDataReader, ABC):
             temp_address = root + "/" + directory + "/"
             if not os.path.isdir(temp_address):
                 continue
-            temp_address = temp_address + "/"
+            
             for filename in os.listdir(temp_address):
-                file_path = temp_address + '/' + filename
+                file_path = temp_address + filename
                 parts = filename.split('/')
                 file_name = os.path.splitext(parts[len(parts) - 1])[0]
                 try:
