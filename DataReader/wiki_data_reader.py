@@ -20,10 +20,9 @@ class WikiDataReader(AbstractDataReader, ABC):
         dictionary_formula_tuples = {}
         root = self.collection_file_path
         for directory in os.listdir(root):
-            temp_address = root+"/"+directory+"/"
+            temp_address = root+"/"+directory
             if not os.path.isdir(temp_address):
                 continue
-            temp_address = temp_address +"/Articles"
             for filename in os.listdir(temp_address):
                 file_path = temp_address + '/' + filename
                 parts = filename.split('/')
@@ -41,6 +40,7 @@ class WikiDataReader(AbstractDataReader, ABC):
                 except:
                     except_count += 1
                     print(file_name)
+        print("number of formulae in the collection: "+str(len(dictionary_formula_tuples.keys())))
         return dictionary_formula_tuples
 
     def get_query(self,):
