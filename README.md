@@ -7,7 +7,7 @@ The codebase is implemented in Python 3.6. Package versions used for development
 
 # Dataset
 To evaluate our embedding model we used [NTCIR-12 dataset](https://www.cs.rit.edu/~rlaz/NTCIR-12_MathIR_Wikipedia_Corpus.zip), focusing on formula retrieval task. The collection contains over 590000 mathematical formulas from Wikipedia with 20 formula queries with their relevant formulas. For comparison with previous approaches we used bpref score to evaluate the top-1000 relevant formulas. 
-Also one can easily use anydataset, such as [Math Stach Exchange] (https://math.stackexchange.com/), in form of csv file of latex formula and formula ids (separated by $$ sign) to train a new model. 
+Also, one can easily use anydataset, such as [Math Stach Exchange] (https://math.stackexchange.com/), in form of csv file of latex formula and formula ids (separated by $$ sign) to train a new model. 
 
 # Running TangentCFT
 Here are the steps to do the Tangent-CFT embeddings. 
@@ -28,15 +28,15 @@ vector_size,300
 ```
 The next step is to decide to train a new model or load a previously trained model that is saved in Saved_model directory. To train a new model, one can simply set directory of NTCIR-12 (or other dataset) and configuration file id. Here is an example of running the model that runs the model with configurations 100 and 101 and saves the vector representations in the direcotry specified in the configuration file:
 ```
-python3 tangent_cft_front_end.py -cid 1 -ds '/NTCIR-12/MathTagArticles' --slt True -em 'encoder.csv'
+python3 tangent_cft_front_end.py -cid 1 -ds 'NTCIR-12_MathIR_Wikipedia_Corpus/MathTagArticles' --slt True -em 'encoder.csv'
 ```
 The command above, use the configuration file, with id 1, use the NTCIR 12 dataset to train the model based on slt representation and saves the encoding map in encoder.csv file. To save the model one can use the command:
 ```
-python3 tangent_cft_front_end.py -cid 2 -ds '/NTCIR-12/MathTagArticles' --slt False -em 'encoder.csv' --mp 'opt_model' 
+python3 tangent_cft_front_end.py -cid 2 -ds 'NTCIR-12_MathIR_Wikipedia_Corpus/MathTagArticles' --slt False -em 'encoder.csv' --mp 'opt_model' 
 ```
 With this command, a model is trained based on OPT representation of NTCIR-12 dataset and result is saved in opt_model. Finally, to load a model, one can use the following command:
 ```
-python3 tangent_cft_front_end.py -cid 2 -ds '/NTCIR-12/MathTagArticles' --slt False -em 'encoder.csv' --mp 'opt_model' --t False --rf res_1
+python3 tangent_cft_front_end.py -cid 2 -ds 'NTCIR-12_MathIR_Wikipedia_Corpus/MathTagArticles' --slt False -em 'encoder.csv' --mp 'opt_model' --t False --rf res_1
 ```
 With this command, train model is set to false and model is loaded and retrieval result is saved in res_1 file in Retrieval_Results directory.
 
