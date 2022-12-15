@@ -52,21 +52,6 @@ fi
 
 
 ##################################
-# Data downloading
-##################################
-
-# Tangent-S installation
-echo ""
-echo "[ Downloading Tangent-S ]"
-if [ -d ./tangents ]
-then
-	mymsg "Tangent-s repository already downloaded."
-else
-  git clone https://gitlab.com/dprl/tangent-s.git
-  mv tangent-s tangents
-fi
-
-##################################
 # Generating tools / environments
 ##################################
 
