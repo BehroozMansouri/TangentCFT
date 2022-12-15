@@ -1,0 +1,76 @@
+#!/bin/bash
+
+################################################################
+# install     - Bash script
+# TangentCFT
+# Author: B. Mansouri et al. (University of Southern Maine, USA)
+################################################################
+
+##################################
+# Functions
+##################################
+
+
+# Report message
+mymsg () {
+	echo "    >> $@"
+	echo ""
+}
+
+# Pass number of arguments sent to outer script and success message to invoke.
+testSuccess () {
+	if [ $? -ne 0 ]
+	then
+		echo ""
+		echo "** Installation error ** -- please review error messages above."
+
+		# Pass any additional argument, program will not halt.
+		if [ $1 -eq 0 ]
+		then
+			exit $?
+		else
+			echo "** Continuing..."
+			echo ""
+		fi
+	else
+		# Success.
+		mymsg $2
+	fi
+}
+
+################################################################
+# Main Script
+################################################################
+
+
+##################################
+# Data downloading
+##################################
+echo ""
+echo "[ Downloading NTICR-12 ]"
+if [ -d ./NTCIR-12_MathIR_Wikipedia_Corpus ]
+then
+	mymsg "NTICR-12 test collection already downloaded."
+else
+  wget https://www.cs.rit.edu/~rlaz/NTCIR-12_MathIR_Wikipedia_Corpus.zip
+  unzip NTCIR-12_MathIR_Wikipedia_Corpus.zip
+  dir="./NTCIR-12_MathIR_Wikipedia_Corpus/MathTagArticles"
+  for filename in $dir/*.tar.bz2; do
+      echo $filename
+      tar xvf $filename -C $dir
+      rm $filename
+  done
+fi
+
+
+##################################
+# Finish
+##################################
+
+# Report success.
+echo "Installation complete!"
+echo ""
+echo "To run the pipeline, use (see README.md for details):"
+
+
+

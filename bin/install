@@ -1,0 +1,104 @@
+#!/bin/bash
+
+################################################################
+# install     - Bash script
+# TangentCFT
+# Author: B. Mansouri et al. (DPRL, RIT, USA)
+################################################################
+
+##################################
+# Functions
+##################################
+
+
+# Report message
+mymsg () {
+	echo "    >> $@"
+	echo ""
+}
+
+# Pass number of arguments sent to outer script and success message to invoke.
+testSuccess () {
+	if [ $? -ne 0 ]
+	then
+		echo ""
+		echo "** Installation error ** -- please review error messages above."
+
+		# Pass any additional argument, program will not halt.
+		if [ $1 -eq 0 ]
+		then
+			exit $?
+		else
+			echo "** Continuing..."
+			echo ""
+		fi
+	else
+		# Success.
+		mymsg $2
+	fi
+}
+
+################################################################
+# Main Script
+################################################################
+
+# Initial message
+echo "TangentCFT Installation Script"
+echo "-------------------------------------"
+if [ $# -gt 0 ]
+then
+	echo "** Force mode: will continue after errors ** (argument passed)"
+fi
+
+
+##################################
+# Data downloading
+##################################
+
+# Tangent-S installation
+echo ""
+echo "[ Downloading Tangent-S ]"
+if [ -d ./tangents ]
+then
+	mymsg "Tangent-s repository already downloaded."
+else
+  git clone https://gitlab.com/dprl/tangent-s.git
+  mv tangent-s tangents
+fi
+
+##################################
+# Generating tools / environments
+##################################
+
+# Set up Conda environment
+echo "[ Creating Conda Python Environment (TangentCFT) ]"
+
+CENV=`conda info --envs`
+if grep -w "tancft" <<< "$CENV"
+then
+	mymsg "Conda tancft environment already created."
+else
+	conda create -n tancft python=3.6.9
+	testSuccess $# "Environment (tancft) created successfully."
+	CONDSH=`conda info | grep 'base environment' | awk '{print $4}'`/etc/profile.d/conda.sh
+	source $CONDSH
+	conda activate tancft
+	pip install -r requirements.txt
+	pip install -r ./tangents/requirements.txt
+	testSuccess $# "Additional packages installed successfully."
+	conda deactivate
+fi
+
+
+
+##################################
+# Finish
+##################################
+
+# Report success.
+echo "Installation complete!"
+echo ""
+echo "To run the pipeline, use (see README.md for details):"
+
+
+

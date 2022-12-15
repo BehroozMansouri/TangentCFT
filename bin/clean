@@ -1,0 +1,29 @@
+#!/bin/bash
+
+################################################################
+# clean     - Bash script
+# TangentCFT
+#
+# Author: B. Mansouri, et al
+################################################################
+
+
+#remove index files
+rm -fr tangents
+#rm -fr LaTeXML
+#remove installment
+CONDSH=`conda info | grep 'base environment' | awk '{print $4}'`/etc/profile.d/conda.sh
+source $CONDSH
+conda deactivate
+conda env remove -n tancft
+
+
+##################################
+# Finish
+##################################
+
+# Report success.
+echo "Uninstallation complete!"
+echo ""
+
+
