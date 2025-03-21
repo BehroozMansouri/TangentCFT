@@ -65,11 +65,13 @@ class TangentCFTBackEnd:
         "reading queries tuples"
         dictionary_query_tuples = self.data_reader.get_query()
         retrieval_result = {}
+        # print(len(retrieval_result))
         for query in dictionary_query_tuples:
             encoded_tuple_query = self.__encode_lst_tuples(dictionary_query_tuples[query], embedding_type,
                                                            ignore_full_relative_path, tokenize_all, tokenize_number)
             query_vec = self.module.get_query_vector(encoded_tuple_query)
             retrieval_result[query] = self.module.formula_retrieval(tensor_values, index_formula_id, query_vec)
+        # print(len(retrieval_result))
         return retrieval_result
 
     def get_collection_query_vectors(self, dictionary_formula_tuples_collection, embedding_type, ignore_full_relative_path, tokenize_all,

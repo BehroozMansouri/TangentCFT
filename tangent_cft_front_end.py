@@ -68,7 +68,6 @@ def main():
                                                 )
             system.create_result_file(retrieval_result, "Retrieval_Results/" + res_file, run_id)
     else:
-
         dictionary_formula_tuples_collection = system.load_model(
             map_file_path=map_file_path,
             model_file_path=model_file_path,
@@ -76,12 +75,12 @@ def main():
             tokenize_all=tokenize_all,
             tokenize_number=tokenize_number
         )
-        if do_retrieval:
-            retrieval_result = system.retrieval(dictionary_formula_tuples_collection,
-                                                embedding_type, ignore_full_relative_path, tokenize_all,
-                                                tokenize_number
-                                                )
-            system.create_result_file(retrieval_result, "Retrieval_Results/" + res_file, run_id)
+    if do_retrieval:
+        retrieval_result = system.retrieval(dictionary_formula_tuples_collection,
+                                            embedding_type, ignore_full_relative_path, tokenize_all,
+                                            tokenize_number
+                                            )
+        system.create_result_file(retrieval_result, "Retrieval_Results/" + res_file, run_id)
 
 
 if __name__ == "__main__":
