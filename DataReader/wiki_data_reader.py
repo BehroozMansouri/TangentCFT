@@ -2,6 +2,8 @@ import os
 import unicodedata
 from abc import ABC
 
+from tqdm import tqdm
+
 from DataReader.abstract_data_reader import AbstractDataReader
 from TangentS.math_tan.math_document import MathDocument
 from TangentS.math_tan.math_extractor import MathExtractor
@@ -23,12 +25,13 @@ class WikiDataReader(AbstractDataReader, ABC):
         except_count = 0
         dictionary_formula_tuples = {}
         root = self.collection_file_path
-        for directory in os.listdir(root):
-            temp_address = root + "/" + directory + "/"
+        print("Reading NTCIR-12 folders")
+        for directory in tqdm(os.listdir(root)):
+            temp_address = root + "/" + directory + "/Articles/"
             if not os.path.isdir(temp_address):
                 continue
             
-            for filename in os.listdir(temp_address):
+            for filename in tqdm(os.listdir(temp_address)):
                 file_path = temp_address + filename
                 parts = filename.split('/')
                 file_name = os.path.splitext(parts[len(parts) - 1])[0]
@@ -45,6 +48,7 @@ class WikiDataReader(AbstractDataReader, ABC):
                 except:
                     except_count += 1
                     print(file_name)
+
         return dictionary_formula_tuples
 
     def get_query(self, ):
