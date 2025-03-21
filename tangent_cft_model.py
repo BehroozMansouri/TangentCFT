@@ -25,8 +25,8 @@ class TangentCftModel:
 
         train_start_time = datetime.datetime.now()
         print("Training the model")
-        self.model = FastText(fast_text_train_data, size=size, window=window, sg=sg, hs=hs,
-                              workers=1, negative=negative, iter=iteration, min_n=min_n,
+        self.model = FastText(fast_text_train_data, vector_size=size, window=window, sg=sg, hs=hs,
+                              workers=1, negative=negative, epochs=iteration, min_n=min_n,
                               max_n=max_n, word_ngrams=word_ngrams)
 
         train_end_time = datetime.datetime.now()
