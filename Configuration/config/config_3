@@ -5,7 +5,7 @@ iter,30
 max,6
 min,3
 negative,20
-ngram,0
+ngram,1
 result_vector_file_path,None
 skip_gram,1
 vector_size,300
