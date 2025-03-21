@@ -3,6 +3,8 @@ import numpy as np
 from torch.autograd import Variable
 import torch
 import torch.nn.functional as F
+from tqdm import tqdm
+
 from Embedding_Preprocessing.encoder_tuple_level import TupleTokenizationMode
 from tangent_cft_back_end import TangentCFTBackEnd
 from tangent_cft_module import TangentCFTModule
@@ -33,7 +35,7 @@ def sum_collection(tensor_values_slt, tensor_values_opt, tensor_values_slt_type)
     numpy_lst = []
     index_formula_id = {}
     idx = 0
-    for formula_id in tensor_values_slt:
+    for formula_id in tqdm(tensor_values_slt):
         temp = tensor_values_slt[formula_id]
         if formula_id in tensor_values_opt:
             temp = np.add(temp, tensor_values_opt[formula_id])
@@ -68,25 +70,31 @@ def retrieval(collection_vectors, index_formula_id, query_vectors):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='This is used to combine vector (by summation with SLT, OPT, and SLT Type.')
 
-    dataset_file_path = "/NTCIR12_MathIR_WikiCorpus_v2.1.0/MathTagArticles"
-    queries_directory_path = "/TestQueries"
+    parser.add_argument('-ds', type=str, help="File path of training data. If using NTCIR12 dataset, "
+                                              "it should be MathTagArticles directory. If using the MSE dataset, it"
+                                              "should be csv file of formula", required=True)
+    parser.add_argument('-qd', type=str, help="NTCIR12 query directory.", default="TestQueries/")
+    args = vars(parser.parse_args())
+    dataset_file_path = args['ds']
+    queries_directory_path = args['qd']
     is_wiki = True
 
     index_formula_id_slt, query_vectors_slt = get_vectors(dataset_file_path, queries_directory_path,
                                                           is_wiki, config_id=1, read_slt=True,
-                                                          encoder_file_path="slt_encoder.csv",
+                                                          encoder_file_path="slt_encoder.tsv",
                                                           model_file_path="slt_model",
                                                           tokenize_number=True)
     index_formula_id_opt, query_vectors_opt = get_vectors(dataset_file_path, queries_directory_path,
                                                           is_wiki, config_id=2, read_slt=False,
-                                                          encoder_file_path="opt_encoder.csv",
+                                                          encoder_file_path="opt_encoder.tsv",
                                                           model_file_path="opt_model")
     index_formula_id_slt_type, query_vectors_slt_type = get_vectors(dataset_file_path,
                                                                     queries_directory_path,
                                                                     is_wiki, config_id=3,
                                                                     read_slt=True,
-                                                                    encoder_file_path="slt_type_encoder.csv",
+                                                                    encoder_file_path="slt_type_encoder.tsv",
                                                                     model_file_path="slt_type_model",
                                                                     tokenization=2)
 
